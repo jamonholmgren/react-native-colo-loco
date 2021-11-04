@@ -17,7 +17,7 @@ yarn add -D react-native-colocate-native
 For iOS, add this to your Podfile (`ios/Podfile`):
 
 ```ruby
-require_relative '../node_modules/react-native-colocated-native/scripts/ios.rb'
+require_relative '../node_modules/react-native-colocate-native/scripts/ios.rb'
 
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
