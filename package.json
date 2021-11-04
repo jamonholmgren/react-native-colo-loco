@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Colocate your native modules with your React Native JavaScript and JSX files",
   "main": "index.js",
-  "repository": "https://github.com/infinitered/react-native-colocate-native",
+  "repository": "https://github.com/jamonholmgren/react-native-colocate-native",
   "author": "Jamon Holmgren <jamonholmgren@gmail.com>",
   "license": "MIT",
   "private": false,
