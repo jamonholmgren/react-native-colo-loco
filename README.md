@@ -43,11 +43,7 @@ app/
 
 Let's build a small native module.
 
-In a fresh React Native project, make a folder called `app`. Place three files inside of that -- `Jamon.tsx`, `Jamon.h`, and `Jamon.m`.
-
-```tsx
-// app/Jamon.tsx
-```
+In a fresh React Native project, make a folder called `app`. Place two files inside of that -- `Jamon.h` and `Jamon.m`.
 
 ```tsx
 // app/Jamon.h
@@ -59,19 +55,49 @@ In a fresh React Native project, make a folder called `app`. Place three files i
 ```tsx
 // Jamon.m
 #import "Jamon.h"
-#import <React/RCTLog.h>
 
 @implementation Jamon
 
-// To export a module named Jamon
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(cool)
+// Export a method -- `Jamon.hello()`
+RCT_EXPORT_METHOD(hello)
 {
- RCTLogInfo(@"This is cool!");
+  // Alerts have to go on the main thread
+  dispatch_async(dispatch_get_main_queue(), ^{
+    UIAlertView *alert = [[UIAlertView alloc]
+      initWithTitle: @"Hello from native!"
+      message: @"This is from Jamon.m"
+      delegate: self
+      cancelButtonTitle: @"Cancel"
+      otherButtonTitles: @"Say Hello",
+      nil
+    ];
+    [alert show];
+  });
 }
 
 @end
 ```
 
-Next, run `npx pod-install` in your terminal.
+Modify the `App.js` to import the native module:
+
+```jsx
+import { NativeModules } from "react-native";
+const { Jamon } = NativeModules;
+
+// Now run it:
+Jamon.hello();
+```
+
+If you haven't added the module yet, run `npm i --save-dev react-native-colocate-native` and then modify your Podfile (replace `MyApp` with your actual app name):
+
+```ruby
+require_relative '../node_modules/react-native-colocate-native/scripts/ios.rb'
+
+link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
+```
+
+Run `npx pod-install` in your terminal and then run your project with `yarn ios` (or `yarn react-native run-ios`).
+
+You should see the native alert pop up in your app!
