@@ -39,7 +39,9 @@ app/
     MyButton.java (coming soon)
 ```
 
-### Example
+## Examples
+
+### Objective-C Example
 
 Let's build a small native module.
 
@@ -101,3 +103,79 @@ link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 Run `npx pod-install` in your terminal and then run your project with `yarn ios` (or `yarn react-native run-ios`).
 
 You should see the native alert pop up in your app!
+
+Hint: You can read a lot more about iOS native modules here: [https://reactnative.dev/docs/native-modules-ios](https://reactnative.dev/docs/native-modules-ios)
+
+#### Swift Example
+
+Swift requires a bit more setup, but after that you should be able to drop in `.swift` files and have them work. Unfortunately, as of now, Swift files still require a `.m` file to expose them to React Native, so you'll still be making two files.
+
+To set up Swift in your project (only has to be done once):
+
+First, open your xcworkspace file (in the `./ios` folder) in Xcode.
+
+Click File -> New -> New File in the menu (or hit Cmd+N).
+
+Choose "Swift File" under the `Source` section. Name it something like `EnableSwift` and click Create.
+
+Xcode should prompt you with this prompt:
+`Would you like to configure an Objective-C bridging header?`
+
+Click `Create bridging header` (this is key).
+
+Inside that file, add this line:
+
+```objective-c
+//
+//  Use this file to import your target's public headers that you would like to expose to Swift.
+//
+#import <React/RCTBridgeModule.h>
+```
+
+Save it, and you now have Swift support. You can close Xcode and let your Mac take a breather.
+
+Now, it's just a matter of adding Swift files to your project. Inside the `./app` folder you created in the previous section, add the following `Gant.swift` file:
+
+```swift
+// Gant.swift
+@objc(Gant)
+class Gant : NSObject {
+  @objc func hello() {
+    // Alerts have to go on the main thread
+    DispatchQueue.main.async {
+      let alert = UIAlertView(
+        title: "Hello from native!",
+        message: "This is from Gant.swift",
+        delegate: nil,
+        cancelButtonTitle: "Cancel",
+        otherButtonTitles: "Say Hello"
+      )
+      alert.show()
+    }
+  }
+}
+```
+
+Also add a `Gant.m` file next to it to export it to React Native:
+
+```objective-c
+// Gant.m
+#import <React/RCTBridgeModule.h>
+
+@interface RCT_EXTERN_MODULE(Gant, NSObject)
+RCT_EXTERN_METHOD(hello)
+@end
+```
+
+In your `App.js`, just use it like you did the `Jamon` native module:
+
+```jsx
+import { NativeModules } from "react-native";
+const { Gant } = NativeModules;
+
+Gant.hello();
+```
+
+Don't forget to run `npx pod-install` (or `pod install` from the ios folder) to link up the new native files.
+
+Then run `yarn ios` to recompile. You should see the alert pop up! Yay!
