@@ -1,4 +1,4 @@
-# React Native Colocate Native
+# React Native Colo Loco 😜
 
 Hey! You found an experiment that I'm working on. Fun fun.
 
@@ -9,9 +9,9 @@ This library (theoretically) lets you colocate your native files with your React
 Add this library to your development dependencies:
 
 ```
-npm install --save-dev react-native-colocate-native
+npm install --save-dev react-native-colo-loco
 # or
-yarn add -D react-native-colocate-native
+yarn add -D react-native-colo-loco
 ```
 
 ### iOS Installation
@@ -19,7 +19,7 @@ yarn add -D react-native-colocate-native
 For iOS, add this to your Podfile (`ios/Podfile`):
 
 ```ruby
-require_relative '../node_modules/react-native-colocate-native/scripts/ios.rb'
+require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
@@ -52,7 +52,7 @@ public class MyAppPackage implements ReactPackage {
    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       List<NativeModule> modules = new ArrayList<>();
 
-      // Add all react-native-colocate-native modules from ./colocated/RNColocate.java
+      // Add all react-native-colo-loco modules from ./colocated/RNColocate.java
       modules.addAll(RNColocate.colocatedModules(reactContext));
 
       return modules;
@@ -79,7 +79,7 @@ Open up your `./android/gradle.settings` file and add this near the top (replace
 ```groovy
 rootProject.name = 'MyApp'
 
-apply from: '../node_modules/react-native-colocate-native/scripts/android.groovy'
+apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
 setupReactNativeColocateNative([
   appName: rootProject.name,
   appPath: "../app",
@@ -160,10 +160,10 @@ const { Jamon } = NativeModules;
 Jamon.hello();
 ```
 
-If you haven't added the module yet, run `npm i --save-dev react-native-colocate-native` and then modify your Podfile (replace `MyApp` with your actual app name):
+If you haven't added the module yet, run `npm i --save-dev react-native-colo-loco` and then modify your Podfile (replace `MyApp` with your actual app name):
 
 ```ruby
-require_relative '../node_modules/react-native-colocate-native/scripts/ios.rb'
+require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
 
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
