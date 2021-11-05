@@ -14,19 +14,87 @@ npm install --save-dev react-native-colocate-native
 yarn add -D react-native-colocate-native
 ```
 
+### iOS Installation
+
 For iOS, add this to your Podfile (`ios/Podfile`):
 
 ```ruby
 require_relative '../node_modules/react-native-colocate-native/scripts/ios.rb'
-
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
-For Android, well, you'll have to wait. Haven't got to that yet.
+### Android Installation
+
+Create a "package" file for your project in `./android/app/src/main/java/com/myapp/MyAppPackage.java` (but replace `myapp` and `MyApp` with your app's name).
+
+The contents of this file will be this:
+
+```java
+// ./android/app/src/main/java/com/myapp/MyAppPackage.java
+package com.myapp; // replace myapp with your app’s package name
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// Replace MyApp with your app's name
+public class MyAppPackage implements ReactPackage {
+   @Override
+   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+       return Collections.emptyList();
+   }
+
+   @Override
+   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+      List<NativeModule> modules = new ArrayList<>();
+
+      // Add all react-native-colocate-native modules from ./colocated/RNColocate.java
+      modules.addAll(RNColocate.colocatedModules(reactContext));
+
+      return modules;
+   }
+}
+```
+
+Open up your `MainApplication.java` file in the same folder and update the following method:
+
+```java
+@Override
+protected List<ReactPackage> getPackages() {
+  @SuppressWarnings("UnnecessaryLocalVariable")
+  List<ReactPackage> packages = new PackageList(this).getPackages();
+  // Packages that cannot be autolinked yet can be added manually here, for example:
+  // packages.add(new MyReactNativePackage());
+  packages.add(new MyAppPackage());
+  return packages;
+}
+```
+
+Open up your `./android/gradle.settings` file and add this near the top (replace `myapp` with your app name):
+
+```groovy
+rootProject.name = 'MyApp'
+
+apply from: '../node_modules/react-native-colocate-native/scripts/android.groovy'
+setupReactNativeColocateNative([
+  appName: rootProject.name,
+  appPath: "../app",
+  appPackageName: "com.myapp",
+  androidPath: "./android/app/src/main/java/com/myapp"
+])
+
+// rest of file...
+```
+
+Now, when you run `yarn android`, it'll hardlink your `.java` files into a `colocated` folder in your Android project directory and then generate the class `RNColocate` which will instantiate & register all of them with your project.
 
 ## Usage
 
-For native Objective-C and Java modules, place your .m, .h, .swift, and .java files anywhere near your JavaScript/JSX files. They'll be linked in automatically when you run `npx pod-install` or `pod install`.
+For native Objective-C and Java modules, place your .m, .h, .swift, and .java files anywhere near your JavaScript/JSX files. They'll be linked in automatically when you run `npx pod-install` or `pod install`, or in Android's case, when you run `yarn android`.
 
 ```
 ios/
@@ -36,7 +104,7 @@ app/
     MyButton.tsx
     MyButton.h
     MyButton.m
-    MyButton.java (coming soon)
+    MyButton.java
 ```
 
 ## Examples
@@ -179,3 +247,7 @@ Gant.hello();
 Don't forget to run `npx pod-install` (or `pod install` from the ios folder) to link up the new native files.
 
 Then run `yarn ios` to recompile. You should see the alert pop up! Yay!
+
+## Android example
+
+Coming soon!
