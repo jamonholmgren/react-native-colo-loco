@@ -52,8 +52,8 @@ public class MyAppPackage implements ReactPackage {
    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       List<NativeModule> modules = new ArrayList<>();
 
-      // Add all react-native-colo-loco modules from ./colocated/RNColocate.java
-      modules.addAll(RNColocate.colocatedModules(reactContext));
+      // Add all react-native-colo-loco modules from ./colocated/ColoLoco.java
+      modules.addAll(ColoLoco.colocatedModules(reactContext));
 
       return modules;
    }
@@ -74,13 +74,13 @@ protected List<ReactPackage> getPackages() {
 }
 ```
 
-Open up your `./android/gradle.settings` file and add this near the top (replace `myapp` with your app name):
+Open up your `./android/settings.gradle` file and add this near the top (replace `myapp` with your app name):
 
 ```groovy
 rootProject.name = 'MyApp'
 
 apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
-setupReactNativeColocateNative([
+linkColocatedNativeFiles([
   appName: rootProject.name,
   appPath: "../app",
   appPackageName: "com.myapp",
@@ -90,7 +90,7 @@ setupReactNativeColocateNative([
 // rest of file...
 ```
 
-Now, when you run `yarn android`, it'll hardlink your `.java` files into a `colocated` folder in your Android project directory and then generate the class `RNColocate` which will instantiate & register all of them with your project.
+Now, when you run `yarn android`, it'll hardlink your `.java` files into a `colocated` folder in your Android project directory and then generate the class `ColoLoco` which will instantiate & register all of them with your project.
 
 ## Usage
 
@@ -117,6 +117,7 @@ In a fresh React Native project, make a folder called `app`. Place two files ins
 
 ```tsx
 // app/Jamon.h
+#import <UIKit/UIKit.h>
 #import <React/RCTBridgeModule.h>
 @interface Jamon : NSObject <RCTBridgeModule>
 @end
