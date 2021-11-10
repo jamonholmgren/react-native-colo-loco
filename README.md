@@ -4,7 +4,7 @@ Hey! You found an experiment that I'm working on. Fun fun.
 
 This library lets you colocate your native Swift, Kotlin, Objective-C, and Java files with your React Native JavaScript/TypeScript files.
 
-![Colo Loco in action](https://user-images.githubusercontent.com/1479215/141171378-5c57f97a-0bb2-494a-ad96-ffdb529cb665.png)
+![Colo Loco in action](https://user-images.githubusercontent.com/1479215/141171825-7dd5afa7-eb75-44ea-b653-04372a47e710.png)
 
 ## Installation
 
