@@ -13,6 +13,7 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   def filesToColocate = new ArrayList<File>()
 
   def moduleInstantiationString = ""
+  def viewManagerInstantiationString = ""
 
   // loop through colocatedJavaFiles and check if the class name matches the file name
   for (filepath in colocatedJavaFiles) {
@@ -38,9 +39,17 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
 
     // verify that the fileNameWithoutExtension matches the className
     if (fileNameWithoutExtension == className) {
-      // add the file to the array
+      // add the file to the array to hardlink later
       filesToColocate.add(file)
-      moduleInstantiationString += "    modules.add(new ${className}(reactContext));\n"
+      
+      // if the classname ends in "ViewManager", add to the viewManagerInstantiationString
+      if (className.endsWith("ViewManager")) {
+        viewManagerInstantiationString += "    viewManagers.add(new ${className}(reactContext));\n"
+      } else {
+        // it's a normal module, not a view manager
+        moduleInstantiationString += "    modules.add(new ${className}(reactContext));\n"
+      }
+      
     } else {
       println "WARNING: file was not added because the class name ${className} didn't match the filename ${fileName}"
     }
@@ -69,6 +78,7 @@ package ${customOptions.appPackageName};
 
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +86,7 @@ import java.util.List;
 import android.util.Log;
 
 class ColoLoco {
+  // Any colocated modules are added here (except ViewManagers)
   public static List<NativeModule> colocatedModules(ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
     // This list is auto-generated. Do not edit manually.
@@ -83,6 +94,16 @@ class ColoLoco {
 ${moduleInstantiationString}
 
     return modules;
+  }
+
+  // Any colocated ViewManagers are added here
+  public static List<ViewManager> colocatedViewManagers(ReactApplicationContext reactContext) {
+    List<ViewManager> viewManagers = new ArrayList<>();
+    // This list is auto-generated. Do not edit manually.
+
+${viewManagerInstantiationString}
+
+    return viewManagers;
   }
 }
   """
