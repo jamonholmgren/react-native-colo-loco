@@ -253,4 +253,50 @@ Then run `yarn ios` to recompile. You should see the alert pop up! Yay!
 
 ## Android example
 
-Coming soon!
+Create a file called `Jamon.java` and drop it into your app folder next to your JSX/TSX files.
+
+```java
+package com.myapp; // change to your app's package name
+
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+
+import android.app.AlertDialog;
+
+import java.util.Map;
+import java.util.HashMap;
+
+public class Jamon extends ReactContextBaseJavaModule {
+  Jamon(ReactApplicationContext context) {
+    super(context);
+  }
+
+  @Override
+  public String getName() {
+    return "Jamon";
+  }
+
+  @ReactMethod
+  public void hello() {
+    // Display a pop-up alert
+    AlertDialog.Builder builder = new AlertDialog.Builder(getCurrentActivity());
+    builder.setMessage("Hi, everybody!")
+      .setTitle("Jamon")
+      .setPositiveButton("OK", null);
+    AlertDialog dialog = builder.create();
+    dialog.show();
+  }
+}
+```
+
+Now when you import it and run in Android, you'll see the alert pop up!
+
+```jsx
+import { NativeModules } from "react-native";
+const { Jamon } = NativeModules;
+
+Jamon.hello();
+```

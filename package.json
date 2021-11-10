@@ -7,6 +7,9 @@
   "author": "Jamon Holmgren <jamonholmgren@gmail.com>",
   "license": "MIT",
   "private": false,
+  "bin": {
+    "install-colo-loco": "./scripts/colo-loco"
+  },
   "files": [
     "scripts",
     "README.md"
