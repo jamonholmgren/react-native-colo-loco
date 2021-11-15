@@ -47,7 +47,11 @@ import java.util.List;
 public class MyAppPackage implements ReactPackage {
    @Override
    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-       return Collections.emptyList();
+      List<ViewManager> modules = new ArrayList<>();
+
+      modules.addAll(ColoLoco.colocatedViewManagers(reactContext));
+
+      return modules;
    }
 
    @Override
@@ -156,11 +160,11 @@ RCT_EXPORT_METHOD(hello)
 Modify the `App.js` to import the native module:
 
 ```jsx
-import { NativeModules } from "react-native";
-const { Jamon } = NativeModules;
+import { NativeModules } from "react-native"
+const { Jamon } = NativeModules
 
 // Now run it:
-Jamon.hello();
+Jamon.hello()
 ```
 
 If you haven't added the module yet, run `npm i --save-dev react-native-colo-loco` and then modify your Podfile (replace `MyApp` with your actual app name):
@@ -241,10 +245,10 @@ RCT_EXTERN_METHOD(hello)
 In your `App.js`, just use it like you did the `Jamon` native module:
 
 ```jsx
-import { NativeModules } from "react-native";
-const { Gant } = NativeModules;
+import { NativeModules } from "react-native"
+const { Gant } = NativeModules
 
-Gant.hello();
+Gant.hello()
 ```
 
 Don't forget to run `npx pod-install` (or `pod install` from the ios folder) to link up the new native files.
@@ -292,10 +296,10 @@ public class Jamon extends ReactContextBaseJavaModule {
 Now when you import it and run in Android, you'll see the alert pop up!
 
 ```jsx
-import { NativeModules } from "react-native";
-const { Jamon } = NativeModules;
+import { NativeModules } from "react-native"
+const { Jamon } = NativeModules
 
-Jamon.hello();
+Jamon.hello()
 ```
 
 ## Native UI Components
@@ -350,11 +354,11 @@ RCT_EXPORT_MODULE(MyImageViewManager)
 To use this in your JSX, use `requireNativeComponent` like so:
 
 ```jsx
-import { requireNativeComponent } from "react-native";
-const MyImageView = requireNativeComponent("MyImageView");
+import { requireNativeComponent } from "react-native"
+const MyImageView = requireNativeComponent("MyImageView")
 
 // ...
-<MyImageView style={{ width: 200, height: 100 }} />;
+;<MyImageView style={{ width: 200, height: 100 }} />
 ```
 
 ### Native Android UI Components
@@ -446,9 +450,9 @@ public class MyImageViewManager extends SimpleViewManager<ReactImageView> {
 To use this in your JSX, use `requireNativeComponent` like so:
 
 ```jsx
-import { requireNativeComponent } from "react-native";
-const MyImageView = requireNativeComponent("MyImageView");
+import { requireNativeComponent } from "react-native"
+const MyImageView = requireNativeComponent("MyImageView")
 
 // ...
-<MyImageView style={{ width: 200, height: 100 }} />;
+;<MyImageView style={{ width: 200, height: 100 }} />
 ```

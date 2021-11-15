@@ -8,10 +8,14 @@
   "license": "MIT",
   "private": false,
   "bin": {
-    "install-colo-loco": "./scripts/colo-loco"
+    "install-colo-loco": "./scripts/install-colo-loco"
   },
   "files": [
     "scripts",
     "README.md"
-  ]
+  ],
+  "prettier": {
+    "printWidth": 120,
+    "semi": false
+  }
 }

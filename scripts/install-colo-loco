@@ -1,0 +1,141 @@
+#!/usr/bin/env node
+
+const readline = require("readline")
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+})
+
+const contents = require("fs").readFileSync(process.cwd() + "/app.json")
+const package = JSON.parse(contents)
+
+const defaultAppName = package.name
+const defaultAppFolder = "app"
+const defaultPackageName = `com.${defaultAppName.toLowerCase()}`
+
+let appName = defaultAppName
+let appFolder = defaultAppFolder
+let packageName = defaultPackageName
+
+console.log("Setting up React Native Colo Loco!")
+
+// ask the user for the app name
+rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
+  rl.question(`App folder? [${defaultAppFolder}] `, function (userAppFolder) {
+    rl.question(`App package name? [${defaultPackageName}] `, function (userPackageName) {
+      appName = userAppName || defaultAppName
+      appFolder = userAppFolder || defaultAppFolder
+      packageName = userPackageName || defaultPackageName
+
+      rl.close()
+    })
+  })
+})
+
+rl.on("close", function () {
+  console.log(`Setting up React Native Colo Loco for ${appName} in ${appFolder}`)
+
+  setupIOS(appName, appFolder, packageName)
+
+  setupAndroid(appName, appFolder, packageName)
+
+  process.exit(0)
+})
+
+function setupIOS(appName, appFolder, packageName) {
+  // read the Podfile
+  const podfileContents = require("fs").readFileSync(process.cwd() + "/ios/Podfile")
+  // does the Podfile already have Colo Loco?
+  const podfileHasColoLoco = podfileContents.indexOf("colo-loco") > -1
+  if (!podfileHasColoLoco) {
+    const coloLocoPodfileContents = `
+# React Native Colo Loco autolinks native files colocated next to your JS files
+# More info here: https://github.com/jamonholmgren/react-native-colo-loco
+require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
+link_colocated_native_files(app_name: '${appName}', app_path: "../${appFolder}")
+`
+
+    // prepend the cololoco setup string
+    const podfile = `${coloLocoPodfileContents}\n\n${podfileContents.toString()}`
+    // write the Podfile
+    require("fs").writeFileSync(process.cwd() + "/ios/Podfile", podfile)
+  } else {
+    console.log("React Native Colo Loco already set up in Podfile")
+  }
+}
+
+function setupAndroid(appName, appFolder, packageName) {
+  // read the settings.gradle file
+  const settingsGradleContents = require("fs").readFileSync(process.cwd() + "/android/settings.gradle")
+
+  // this is where we'll be doing the bulk of our work
+  const androidPath = `./android/app/src/main/java/${packageName.split(".").join("/")}`
+
+  // does the settings.gradle already have Colo Loco?
+  const settingsGradleHasColoLoco = settingsGradleContents.indexOf("colo-loco") > -1
+  if (!settingsGradleHasColoLoco) {
+    const coloLocoSettingsGradleContents = `
+// React Native Colo Loco autolinks native files colocated next to your JS files
+// More info here: https://github.com/jamonholmgren/react-native-colo-loco
+apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
+linkColocatedNativeFiles([
+  appName: rootProject.name,
+  appPath: "../${appFolder}",
+  appPackageName: "${packageName}",
+  androidPath: "${androidPath}"
+])
+`
+
+    // prepend the cololoco setup string
+    const settingsGradle = `${coloLocoSettingsGradleContents}\n\n${settingsGradleContents.toString()}`
+
+    // write the settings.gradle
+    require("fs").writeFileSync(process.cwd() + "/android/settings.gradle", settingsGradle)
+  } else {
+    console.log("React Native Colo Loco already set up in settings.gradle")
+  }
+
+  // create MyAppPackage.java
+  const myAppPackagePath = `${androidPath}/${appName}Package.java`
+
+  // if the file exists, skip it
+  if (require("fs").existsSync(myAppPackagePath)) {
+    console.log("MyAppPackage.java already exists")
+  } else {
+    const myAppPackageContents = `
+// ./android/app/src/main/java/com/myapp/${appName}Package.java
+package ${packageName};
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ${appName}Package implements ReactPackage {
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+      List<ViewManager> modules = new ArrayList<>();
+
+      modules.addAll(ColoLoco.colocatedViewManagers(reactContext));
+
+      return modules;
+    }
+
+    @Override
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+      List<NativeModule> modules = new ArrayList<>();
+
+      // Add all react-native-colo-loco modules from ./colocated/ColoLoco.java
+      modules.addAll(ColoLoco.colocatedModules(reactContext));
+
+      return modules;
+    }
+}
+`
+    // write the MyAppPackage.java
+    require("fs").writeFileSync(myAppPackagePath, myAppPackageContents)
+  }
+}
