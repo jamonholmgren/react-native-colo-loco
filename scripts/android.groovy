@@ -26,37 +26,45 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
     String fileText = file.text
     def classIndex = fileText.indexOf(classString)
 
-    def restOfClass = fileText.substring(classIndex + classString.length(), fileText.length())
-
-    // get the first word from the restOfClass as className
-    def className = restOfClass.substring(0, restOfClass.indexOf(" "))
-
     // get the file name from the file path
     def fileName = file.getName()
 
-    // get the filename without the extension
-    def fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."))
+    // if classString is found, get the class name
+    if (classIndex != -1) {
+      def restOfClass = fileText.substring(classIndex + classString.length(), fileText.length())
 
-    // verify that the fileNameWithoutExtension matches the className
-    if (fileNameWithoutExtension == className) {
-      // add the file to the array to hardlink later
-      filesToColocate.add(file)
-      
-      // if the classname ends in "ViewManager", add to the viewManagerInstantiationString
-      if (className.endsWith("ViewManager")) {
-        viewManagerInstantiationString += "    viewManagers.add(new ${className}(reactContext));\n"
+      // get the first word from the restOfClass as className
+      def className = restOfClass.substring(0, restOfClass.indexOf(" "))
+
+      // get the filename without the extension
+      def fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."))
+
+      // verify that the fileNameWithoutExtension matches the className
+      if (fileNameWithoutExtension == className) {
+        // add the file to the array to hardlink later
+        filesToColocate.add(file)
+        
+        // if the classname ends in "ViewManager", add to the viewManagerInstantiationString
+        if (className.endsWith("ViewManager")) {
+          viewManagerInstantiationString += "    viewManagers.add(new ${className}(reactContext));\n"
+        } else {
+          // it's a normal module, not a view manager
+          moduleInstantiationString += "    modules.add(new ${className}(reactContext));\n"
+        }
+        
       } else {
-        // it's a normal module, not a view manager
-        moduleInstantiationString += "    modules.add(new ${className}(reactContext));\n"
+        println "WARNING: file was not added because the class name ${className} didn't match the filename ${fileName}, skipping"
       }
-      
     } else {
-      println "WARNING: file was not added because the class name ${className} didn't match the filename ${fileName}"
+      println "WARNING: file ${fileName} doesn't contain a class, skipping"
     }
-
   }
 
-  // make sure there is a `colocated` folder in the androidPath
+  // remove the 'colocated' folder if it exists in the androidPath
+  def rmdirCommand = "rmdir ${androidPath}/colocated"
+  rmdirCommand.execute()
+
+  // create the `colocated` folder in the androidPath
   def mkdirCommand = "mkdir -p ${androidPath}/colocated"
   mkdirCommand.execute()
   
