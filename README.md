@@ -16,7 +16,15 @@ npm install --save-dev react-native-colo-loco
 yarn add -D react-native-colo-loco
 ```
 
-### iOS Installation
+Once you have installed `react-native-colo-loco`, you can try running our setup script.
+
+First, commit any changes, as we don't want to mess anything up. The script won't continue if your git working tree is dirty.
+
+Then run `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
+
+Lastly, run `npx pod-install` and then `yarn ios` and `yarn android` to finish installation and compile.
+
+### iOS Manual Installation
 
 For iOS, add this to your Podfile (`ios/Podfile`):
 
@@ -25,7 +33,7 @@ require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
-### Android Installation
+### Android Manual Installation
 
 Create a "package" file for your project in `./android/app/src/main/java/com/myapp/MyAppPackage.java` (but replace `myapp` and `MyApp` with your app's name).
 

@@ -2,6 +2,12 @@
 
 const fs = require("fs")
 
+// check if their git working tree is dirty
+if (isGitDirty()) {
+  console.error("Your git working tree is dirty. Please commit or stash your changes before running this script.")
+  process.exit(1)
+}
+
 const readline = require("readline")
 const rl = readline.createInterface({
   input: process.stdin,
@@ -44,6 +50,14 @@ rl.on("close", function () {
 
   setupAndroid(appName, sourceFolder, packageName)
 
+  console.log("🤪 React Native Colo Loco is now installed!")
+  console.log("   Next, run `npx pod-install` to link up any iOS native files.")
+  console.log("   When you run `yarn android`, our script will link any Android native files.")
+  console.log("   To enable Swift, follow the directions in the React Native docs")
+  console.log("   https://reactnative.dev/docs/native-modules-ios#exporting-swift")
+  console.log("   To enable Kotlin, it's a bit more involved, but you can start here:")
+  console.log("   https://proandroiddev.com/react-native-bridge-with-kotlin-b2afde2f70b")
+
   process.exit(0)
 })
 
@@ -84,7 +98,7 @@ function setupAndroid(appName, sourceFolder, packageName) {
 // More info here: https://github.com/jamonholmgren/react-native-colo-loco
 apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
 linkColocatedNativeFiles([
-  appName: rootProject.name,
+  appName: "${appName}",
   appPath: "../${sourceFolder}",
   appPackageName: "${packageName}",
   androidPath: "${androidPath}"
@@ -166,4 +180,11 @@ function firstExistingFolder(folders) {
   return folders.find((folder) => {
     return fs.existsSync(folder)
   })
+}
+
+function isGitDirty() {
+  const output = require("child_process").spawnSync("git", ["status", "--porcelain"])
+  if (output.status === 0) {
+    return output.stdout.toString().trim().length > 0
+  }
 }
