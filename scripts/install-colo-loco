@@ -57,7 +57,7 @@ rl.on("close", function () {
   console.log("    • To enable Swift, follow the directions in the React Native docs")
   console.log("      https://reactnative.dev/docs/native-modules-ios#exporting-swift")
   console.log("    • To enable Kotlin, it's a bit more involved, but you can start here:")
-  console.log("      https://proandroiddev.com/react-native-bridge-with-kotlin-b2afde2f70b")
+  console.log("      https://github.com/infinitered/DiveIntoNativeUpdate#android")
   console.log("")
 
   process.exit(0)

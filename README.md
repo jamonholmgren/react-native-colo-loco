@@ -310,6 +310,12 @@ const { Jamon } = NativeModules
 Jamon.hello()
 ```
 
+#### Android Kotlin Example
+
+TODO, but to get you started, you can check out this project:
+
+https://github.com/infinitered/DiveIntoNativeUpdate#android
+
 ## Native UI Components
 
 Native modules are fun, but even more fun are native UI components.
