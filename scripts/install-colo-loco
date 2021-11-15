@@ -50,13 +50,15 @@ rl.on("close", function () {
 
   setupAndroid(appName, sourceFolder, packageName)
 
-  console.log("🤪 React Native Colo Loco is now installed!")
-  console.log("   Next, run `npx pod-install` to link up any iOS native files.")
-  console.log("   When you run `yarn android`, our script will link any Android native files.")
-  console.log("   To enable Swift, follow the directions in the React Native docs")
-  console.log("   https://reactnative.dev/docs/native-modules-ios#exporting-swift")
-  console.log("   To enable Kotlin, it's a bit more involved, but you can start here:")
-  console.log("   https://proandroiddev.com/react-native-bridge-with-kotlin-b2afde2f70b")
+  console.log("")
+  console.log(" 🤪 React Native Colo Loco is now installed!")
+  console.log("    • Next, run `npx pod-install` to link up any iOS native files.")
+  console.log("    • When you run `yarn android`, our script will link any Android native files.")
+  console.log("    • To enable Swift, follow the directions in the React Native docs")
+  console.log("      https://reactnative.dev/docs/native-modules-ios#exporting-swift")
+  console.log("    • To enable Kotlin, it's a bit more involved, but you can start here:")
+  console.log("      https://proandroiddev.com/react-native-bridge-with-kotlin-b2afde2f70b")
+  console.log("")
 
   process.exit(0)
 })
