@@ -1,30 +1,35 @@
 #!/usr/bin/env node
 
+const fs = require("fs")
+
 const readline = require("readline")
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 })
 
-const contents = require("fs").readFileSync(process.cwd() + "/app.json")
+const contents = fs.readFileSync(process.cwd() + "/app.json")
 const package = JSON.parse(contents)
 
 const defaultAppName = package.name
-const defaultAppFolder = "app"
+
+// look for existing folders, or default to 'app'
+let defaultSourceFolder = firstExistingFolder(["app", "src", "App", "source", "Source"]) || "app"
+
 const defaultPackageName = `com.${defaultAppName.toLowerCase()}`
 
 let appName = defaultAppName
-let appFolder = defaultAppFolder
+let sourceFolder = defaultSourceFolder
 let packageName = defaultPackageName
 
 console.log("Setting up React Native Colo Loco!")
 
 // ask the user for the app name
 rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
-  rl.question(`App folder? [${defaultAppFolder}] `, function (userAppFolder) {
+  rl.question(`App folder? [${defaultSourceFolder}] `, function (userSourceFolder) {
     rl.question(`App package name? [${defaultPackageName}] `, function (userPackageName) {
       appName = userAppName || defaultAppName
-      appFolder = userAppFolder || defaultAppFolder
+      sourceFolder = userSourceFolder || defaultSourceFolder
       packageName = userPackageName || defaultPackageName
 
       rl.close()
@@ -33,18 +38,18 @@ rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
 })
 
 rl.on("close", function () {
-  console.log(`Setting up React Native Colo Loco for ${appName} in ${appFolder}`)
+  console.log(`Setting up React Native Colo Loco for ${appName} in ${sourceFolder}`)
 
-  setupIOS(appName, appFolder, packageName)
+  setupIOS(appName, sourceFolder, packageName)
 
-  setupAndroid(appName, appFolder, packageName)
+  setupAndroid(appName, sourceFolder, packageName)
 
   process.exit(0)
 })
 
-function setupIOS(appName, appFolder, packageName) {
+function setupIOS(appName, sourceFolder, packageName) {
   // read the Podfile
-  const podfileContents = require("fs").readFileSync(process.cwd() + "/ios/Podfile")
+  const podfileContents = fs.readFileSync(process.cwd() + "/ios/Podfile")
   // does the Podfile already have Colo Loco?
   const podfileHasColoLoco = podfileContents.indexOf("colo-loco") > -1
   if (!podfileHasColoLoco) {
@@ -52,21 +57,21 @@ function setupIOS(appName, appFolder, packageName) {
 # React Native Colo Loco autolinks native files colocated next to your JS files
 # More info here: https://github.com/jamonholmgren/react-native-colo-loco
 require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
-link_colocated_native_files(app_name: '${appName}', app_path: "../${appFolder}")
+link_colocated_native_files(app_name: '${appName}', app_path: "../${sourceFolder}")
 `
 
     // prepend the cololoco setup string
     const podfile = `${coloLocoPodfileContents}\n\n${podfileContents.toString()}`
     // write the Podfile
-    require("fs").writeFileSync(process.cwd() + "/ios/Podfile", podfile)
+    fs.writeFileSync(process.cwd() + "/ios/Podfile", podfile)
   } else {
     console.log("React Native Colo Loco already set up in Podfile")
   }
 }
 
-function setupAndroid(appName, appFolder, packageName) {
+function setupAndroid(appName, sourceFolder, packageName) {
   // read the settings.gradle file
-  const settingsGradleContents = require("fs").readFileSync(process.cwd() + "/android/settings.gradle")
+  const settingsGradleContents = fs.readFileSync(process.cwd() + "/android/settings.gradle")
 
   // this is where we'll be doing the bulk of our work
   const androidPath = `./android/app/src/main/java/${packageName.split(".").join("/")}`
@@ -80,7 +85,7 @@ function setupAndroid(appName, appFolder, packageName) {
 apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
 linkColocatedNativeFiles([
   appName: rootProject.name,
-  appPath: "../${appFolder}",
+  appPath: "../${sourceFolder}",
   appPackageName: "${packageName}",
   androidPath: "${androidPath}"
 ])
@@ -90,7 +95,7 @@ linkColocatedNativeFiles([
     const settingsGradle = `${coloLocoSettingsGradleContents}\n\n${settingsGradleContents.toString()}`
 
     // write the settings.gradle
-    require("fs").writeFileSync(process.cwd() + "/android/settings.gradle", settingsGradle)
+    fs.writeFileSync(process.cwd() + "/android/settings.gradle", settingsGradle)
   } else {
     console.log("React Native Colo Loco already set up in settings.gradle")
   }
@@ -98,10 +103,8 @@ linkColocatedNativeFiles([
   // create MyAppPackage.java
   const myAppPackagePath = `${androidPath}/${appName}Package.java`
 
-  // if the file exists, skip it
-  if (require("fs").existsSync(myAppPackagePath)) {
-    console.log("MyAppPackage.java already exists")
-  } else {
+  // does MyAppPackage.java already exist?
+  if (!fs.existsSync(myAppPackagePath)) {
     const myAppPackageContents = `
 // ./android/app/src/main/java/com/myapp/${appName}Package.java
 package ${packageName};
@@ -136,6 +139,31 @@ public class ${appName}Package implements ReactPackage {
 }
 `
     // write the MyAppPackage.java
-    require("fs").writeFileSync(myAppPackagePath, myAppPackageContents)
+    fs.writeFileSync(myAppPackagePath, myAppPackageContents)
+  } else {
+    console.log(`${appName}Package.java already exists`)
   }
+
+  // update MainApplication.java to include MyAppPackage.java
+  const packageInitString = `packages.add(new ${appName}Package());`
+
+  const mainApplicationPath = `${androidPath}/MainApplication.java`
+  const mainApplicationContents = fs.readFileSync(mainApplicationPath)
+  const packageInitExists = mainApplicationContents.indexOf(packageInitString) > -1
+  if (!packageInitExists) {
+    const mainApplication = mainApplicationContents.toString()
+    const newMainApplicationContents = mainApplication.replace(
+      `          return packages;`,
+      `          ${packageInitString}\n\n          return packages;`
+    )
+    fs.writeFileSync(mainApplicationPath, newMainApplicationContents)
+  } else {
+    console.log(`MainApplication.java already includes ${appName}Package.java`)
+  }
+}
+
+function firstExistingFolder(folders) {
+  return folders.find((folder) => {
+    return fs.existsSync(folder)
+  })
 }
