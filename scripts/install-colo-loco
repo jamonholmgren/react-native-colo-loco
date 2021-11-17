@@ -17,10 +17,11 @@ const rl = readline.createInterface({
   output: process.stdout,
 })
 
-const contents = fs.readFileSync(process.cwd() + "/app.json")
+const packageFile = fs.existsSync(process.cwd() + "/app.json") ? "app.json" : "package.json"
+const contents = fs.readFileSync(process.cwd() + "/" + packageFile)
 const package = JSON.parse(contents)
 
-const defaultAppName = package.name
+const defaultAppName = pascalCase(package.name)
 
 // look for existing folders, or default to 'app'
 let defaultSourceFolder = firstExistingFolder(["app", "src", "App", "source", "Source"]) || "app"
@@ -49,9 +50,12 @@ if (!defaults) {
       })
     })
   })
+  rl.on("close", setupColoLoco)
+} else {
+  setupColoLoco()
 }
 
-rl.on("close", function () {
+function setupColoLoco() {
   console.log(`Setting up React Native Colo Loco for ${appName} in ${sourceFolder}`)
 
   setupIOS(appName, sourceFolder, packageName)
@@ -69,7 +73,7 @@ rl.on("close", function () {
   console.log("")
 
   process.exit(0)
-})
+}
 
 function setupIOS(appName, sourceFolder, packageName) {
   // read the Podfile
@@ -197,4 +201,14 @@ function isGitDirty() {
   if (output.status === 0) {
     return output.stdout.toString().trim().length > 0
   }
+}
+
+// function to pascalcase a string
+function pascalCase(str) {
+  return str
+    .split("-")
+    .map((part) => {
+      return part.charAt(0).toUpperCase() + part.slice(1)
+    })
+    .join("")
 }
