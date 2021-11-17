@@ -7,7 +7,7 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   // strip "./android/" from the androidPath
   def androidPath = customOptions.androidPath.replace("android/", "")
 
-  def colocatedJavaFiles = new FileNameFinder().getFileNames(customOptions.appPath, '**/*.java', '')
+  def colocatedJavaFiles = new FileNameFinder().getFileNames('${System.getProperty('user.dir')}/${customOptions.appPath}', '**/*.java', '')
 
   // make an array to hold the files to be colocated
   def filesToColocate = new ArrayList<File>()
