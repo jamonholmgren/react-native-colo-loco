@@ -2,8 +2,10 @@
 
 const fs = require("fs")
 
+const noGitCheck = process.argv.includes("--no-git-check")
+
 // check if their git working tree is dirty
-if (isGitDirty()) {
+if (!noGitCheck && isGitDirty()) {
   console.error("Your git working tree is dirty. Please commit or stash your changes before running this script.")
   process.exit(1)
 }
