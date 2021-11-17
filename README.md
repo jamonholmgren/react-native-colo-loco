@@ -207,7 +207,8 @@ Hint: You can read a lot more about iOS native modules here: [https://reactnativ
 
 Swift requires a bit more setup, but after that you should be able to drop in `.swift` files and have them work. Unfortunately, as of now, Swift files still require a `.m` file to expose them to React Native, so you'll still be making two files.
 
-To set up Swift in your project (only has to be done once):
+<details>
+  <summary>To set up Swift in your project (only has to be done once), click here to expand.</summary>
 
 First, open your xcworkspace file (in the `./ios` folder) in Xcode.
 
@@ -230,6 +231,8 @@ Inside that file, add this line:
 ```
 
 Save it, and you now have Swift support. You can close Xcode and let your Mac take a breather.
+
+</details>
 
 Now, it's just a matter of adding Swift files to your project. Inside the `./app` folder you created in the previous section, add the following `Gant.swift` file:
 
@@ -263,14 +266,8 @@ Also add a `Gant.m` file next to it to export it to React Native:
 #import <React/RCTBridgeModule.h>
 
 @interface RCT_EXTERN_MODULE(Gant, NSObject)
-
 RCT_EXTERN_METHOD(hello)
-
-+ (BOOL)requiresMainQueueSetup
-{
-  return NO;
-}
-
++ (BOOL)requiresMainQueueSetup { return NO; }
 @end
 ```
 
