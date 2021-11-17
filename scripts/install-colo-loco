@@ -8,6 +8,9 @@ if (isGitDirty()) {
   process.exit(1)
 }
 
+// get the app name, source folder, and package name from command-line arguments
+const defaults = process.argv.includes("--defaults")
+
 const readline = require("readline")
 const rl = readline.createInterface({
   input: process.stdin,
@@ -30,18 +33,23 @@ let packageName = defaultPackageName
 
 console.log("Setting up React Native Colo Loco!")
 
-// ask the user for the app name
-rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
-  rl.question(`App folder? [${defaultSourceFolder}] `, function (userSourceFolder) {
-    rl.question(`App package name? [${defaultPackageName}] `, function (userPackageName) {
-      appName = userAppName || defaultAppName
-      sourceFolder = userSourceFolder || defaultSourceFolder
-      packageName = userPackageName || defaultPackageName
+// if we're not using the `--defaults` flag, ask the user for the app name, source folder, and package name
+if (!defaults) {
+  // ask the user for the app name
+  rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
+    // ask the user for the source folder
+    rl.question(`Source folder? [${defaultSourceFolder}] `, function (userSourceFolder) {
+      // ask the user for the app package name
+      rl.question(`App package name? [${defaultPackageName}] `, function (userPackageName) {
+        appName = userAppName || defaultAppName
+        sourceFolder = userSourceFolder || defaultSourceFolder
+        packageName = userPackageName || defaultPackageName
 
-      rl.close()
+        rl.close()
+      })
     })
   })
-})
+}
 
 rl.on("close", function () {
   console.log(`Setting up React Native Colo Loco for ${appName} in ${sourceFolder}`)
