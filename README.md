@@ -1,14 +1,24 @@
-# React Native Colo Loco 😜
+# React Native Colo Loco 🤪
 
-Hey! You found an experiment that I'm working on. Fun fun.
+Ever wanted to colocate your native Swift, Kotlin, Objective-C, and Java files with your React Native JavaScript/TypeScript files?
 
-This library lets you colocate your native Swift, Kotlin, Objective-C, and Java files with your React Native JavaScript/TypeScript files.
+Now you can!
 
 ![Colo Loco in action](https://user-images.githubusercontent.com/1479215/141171825-7dd5afa7-eb75-44ea-b653-04372a47e710.png)
 
+## Why?
+
+Integrating native modules and components into a React Native app is one of the more powerful and underutilized features of React Native.
+
+When you use Colo Loco, you don't have to do the lengthy manual setup for both iOS and Android, nor do you have to open Xcode, Android Studio, or be digging through the `./ios` and `./android` folders.
+
+You just drop in your native files, run `pod install`, and then import your native modules and components into your JavaScript/TypeScript files and build your app! Colo Loco will find your native files, automatically link them up to the Xcode and Android Studio projects, and you can focus on your code.
+
 ## Installation
 
-Add this library to your development dependencies:
+_Note that Colo Loco doesn't (yet) support Expo._
+
+Add Colo Loco to your development dependencies:
 
 ```
 npm install --save-dev react-native-colo-loco
@@ -20,22 +30,32 @@ Once you have installed `react-native-colo-loco`, you can try running our setup 
 
 First, commit any changes, as we don't want to mess anything up. The script won't continue if your git working tree is dirty.
 
-Then run `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
+Then run `npm run install-colo-loco` or `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
 
-Lastly, run `npx pod-install` and then `yarn ios` and `yarn android` to finish installation and compile.
+Lastly, run `npx pod-install` and then `npm run ios`/`yarn ios` and `npm run android`/`yarn android` to finish installation and compile.
+
+_NOTE: If this doesn't work or you have a non-standard project structure, try the manual instructions below._
 
 ### iOS Manual Installation
 
-For iOS, add this to your Podfile (`ios/Podfile`):
+<details>
+  <summary>Click to expand iOS manual instructions</summary>
+
+For iOS, add this to your Podfile (`ios/Podfile`) (don't forget to change `MyApp` to your actual app name):
 
 ```ruby
 require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
+</details>
+
 ### Android Manual Installation
 
-Create a "package" file for your project in `./android/app/src/main/java/com/myapp/MyAppPackage.java` (but replace `myapp` and `MyApp` with your app's name).
+<details>
+  <summary>Click to expand Android manual instructions</summary>
+  
+Create a "package" file for your project in `./android/app/src/main/java/com/myapp/MyAppPackage.java` (but replace `myapp` and `MyApp` with your app's package name and app name).
 
 The contents of this file will be this:
 
@@ -106,9 +126,11 @@ linkColocatedNativeFiles([
 
 Now, when you run `yarn android`, it'll hardlink your `.java` files into a `colocated` folder in your Android project directory and then generate the class `ColoLoco` which will instantiate & register all of them with your project.
 
+</details>
+
 ## Usage
 
-For native Objective-C and Java modules, place your .m, .h, .swift, and .java files anywhere near your JavaScript/JSX files. They'll be linked in automatically when you run `npx pod-install` or `pod install`, or in Android's case, when you run `yarn android`.
+For native Objective-C and Java modules, place your .m, .h, .swift, and .java files anywhere near your JavaScript/JSX files. They'll be linked in automatically when you run `npx pod-install` or `pod install`, or in Android's case, when you run `npm run android` / `yarn android`.
 
 ```
 ios/
@@ -127,7 +149,7 @@ app/
 
 Let's build a small native module.
 
-In a fresh React Native project, make a folder called `app`. Place two files inside of that -- `Jamon.h` and `Jamon.m`.
+In a fresh React Native project, install `react-native-colo-loco` (see instructions above) and then make a folder called `app`. Place two files inside of that -- `Jamon.h` and `Jamon.m`.
 
 ```tsx
 // app/Jamon.h
@@ -173,14 +195,6 @@ const { Jamon } = NativeModules
 
 // Now run it:
 Jamon.hello()
-```
-
-If you haven't added the module yet, run `npm i --save-dev react-native-colo-loco` and then modify your Podfile (replace `MyApp` with your actual app name):
-
-```ruby
-require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
-
-link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
 Run `npx pod-install` in your terminal and then run your project with `yarn ios` (or `yarn react-native run-ios`).
@@ -325,6 +339,8 @@ Jamon.hello()
 TODO, but to get you started, you can check out this project:
 
 https://github.com/infinitered/DiveIntoNativeUpdate#android
+
+Colo Loco hasn't yet been tested with Kotlin files, so expect some bugs along the way.
 
 ## Native UI Components
 
@@ -477,6 +493,7 @@ To use this in your JSX, use `requireNativeComponent` like so:
 import { requireNativeComponent } from "react-native"
 const MyImageView = requireNativeComponent("MyImageView")
 
-// ...
-;<MyImageView style={{ width: 200, height: 100 }} />
+function MyComponent() {
+  return <MyImageView style={{ width: 200, height: 100 }} />
+}
 ```
