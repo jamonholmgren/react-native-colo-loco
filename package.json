@@ -1,6 +1,6 @@
 {
   "name": "react-native-colo-loco",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Colocate your native modules with your React Native JavaScript and JSX files",
   "main": "index.js",
   "repository": "https://github.com/jamonholmgren/react-native-colo-loco",
