@@ -221,6 +221,9 @@ Now, it's just a matter of adding Swift files to your project. Inside the `./app
 
 ```swift
 // Gant.swift
+import Foundation
+import UIKit
+
 @objc(Gant)
 class Gant : NSObject {
   @objc func hello() {
@@ -246,7 +249,14 @@ Also add a `Gant.m` file next to it to export it to React Native:
 #import <React/RCTBridgeModule.h>
 
 @interface RCT_EXTERN_MODULE(Gant, NSObject)
+
 RCT_EXTERN_METHOD(hello)
+
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 @end
 ```
 

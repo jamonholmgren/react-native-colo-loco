@@ -75,7 +75,7 @@ function setupColoLoco() {
   process.exit(0)
 }
 
-function setupIOS(appName, sourceFolder, packageName) {
+function setupIOS(appName, sourceFolder, _packageName) {
   // read the Podfile
   const podfileContents = fs.readFileSync(process.cwd() + "/ios/Podfile")
   // does the Podfile already have Colo Loco?
