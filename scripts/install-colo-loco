@@ -222,8 +222,8 @@ public class ${appName}Package implements ReactPackage {
   if (!packageInitExists) {
     const mainApplication = mainApplicationContents.toString()
     const newMainApplicationContents = mainApplication.replace(
-      `          return packages;`,
-      `          ${packageInitString}\n\n          return packages;`
+      `return packages;`,
+      `${packageInitString}\n\n          return packages;`
     )
     fs.writeFileSync(mainApplicationPath, newMainApplicationContents)
   } else {
