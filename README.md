@@ -26,9 +26,7 @@ npm install --save-dev react-native-colo-loco
 yarn add -D react-native-colo-loco
 ```
 
-Once you have installed `react-native-colo-loco`, you can try running our setup script.
-
-Then run the provided installation script. This will attempt to automatically patch the necessary files.
+Once you have installed `react-native-colo-loco`, you can try running our setup script. This will attempt to automatically patch the necessary files.
 
 ```
 npx install-colo-loco
