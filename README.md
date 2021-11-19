@@ -410,8 +410,9 @@ To use this in your JSX, use `requireNativeComponent` like so:
 import { requireNativeComponent } from "react-native"
 const MyImageView = requireNativeComponent("MyImageView")
 
-// ...
-;<MyImageView style={{ width: 200, height: 100 }} />
+function MyComponent() {
+  return <MyImageView style={{ width: 200, height: 100 }} />
+}
 ```
 
 ### Native Android UI Components
@@ -440,63 +441,63 @@ import android.view.View;
 import java.net.URL;
 
 public class MyImageViewManager extends SimpleViewManager<ReactImageView> {
-    // This is the string we use to identify this view when we call
-    // requireNativeComponent("MyImageView") in JS.
-    public static final String REACT_CLASS = "MyImageView";
+  // This is the string we use to identify this view when we call
+  // requireNativeComponent("MyImageView") in JS.
+  public static final String REACT_CLASS = "MyImageView";
 
-    // We hang onto a reference of our React app context for later use.
-    ReactApplicationContext mCallerContext;
-    ReactImageView mView;
+  // We hang onto a reference of our React app context for later use.
+  ReactApplicationContext mCallerContext;
+  ReactImageView mView;
 
-    // This is the URL of the image we'll show
-    private final String logoURL = "https://logos-world.net/wp-content/uploads/2021/10/Meta-facebook-Logo-700x394.png";
+  // This is the URL of the image we'll show
+  private final String logoURL = "https://logos-world.net/wp-content/uploads/2021/10/Meta-facebook-Logo-700x394.png";
 
-    // Constructor -- saves a reference to the React context
-    public MyImageViewManager(ReactApplicationContext reactContext) {
-        mCallerContext = reactContext;
-    }
+  // Constructor -- saves a reference to the React context
+  public MyImageViewManager(ReactApplicationContext reactContext) {
+    mCallerContext = reactContext;
+  }
 
-    // Required method to allow React Native to know what the name of this class is.
-    @Override
-    public String getName() {
-        return REACT_CLASS;
-    }
+  // Required method to allow React Native to know what the name of this class is.
+  @Override
+  public String getName() {
+    return REACT_CLASS;
+  }
 
-    // This method is where we create our native view.
-    @Override
-    protected ReactImageView createViewInstance(ThemedReactContext reactContext) {
-        // Instantiate a new ReactImageView
-        // Fresco is a Facebook library for managing Android images and the memory they use.
-        // https://github.com/facebook/fresco
-        mView = new ReactImageView(reactContext, Fresco.newDraweeControllerBuilder(), null, mCallerContext);
+  // This method is where we create our native view.
+  @Override
+  protected ReactImageView createViewInstance(ThemedReactContext reactContext) {
+    // Instantiate a new ReactImageView
+    // Fresco is a Facebook library for managing Android images and the memory they use.
+    // https://github.com/facebook/fresco
+    mView = new ReactImageView(reactContext, Fresco.newDraweeControllerBuilder(), null, mCallerContext);
 
-        // This "handler" allows the `startDownloading` thread to call back to *this* thread.
-        // Otherwise crashy crashy!
-        final Handler mainThread = new Handler();
+    // This "handler" allows the `startDownloading` thread to call back to *this* thread.
+    // Otherwise crashy crashy!
+    final Handler mainThread = new Handler();
 
-        // We'll download the image now and apply it back to this view
-        startDownloading(mainThread);
+    // We'll download the image now and apply it back to this view
+    startDownloading(mainThread);
 
-        // Return our view back to React Native.
-        return mView;
-    }
+    // Return our view back to React Native.
+    return mView;
+  }
 
-    // Download our image.
-    private void startDownloading(final Handler mainThread) {
-        // Create a new background thread to download our image
-        new Thread(() -> {
-            try {
-                // Download, blocking THIS background thread but not the main one
-                URL url = new URL(logoURL);
-                final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+  // Download our image.
+  private void startDownloading(final Handler mainThread) {
+    // Create a new background thread to download our image
+    new Thread(() -> {
+      try {
+        // Download, blocking THIS background thread but not the main one
+        URL url = new URL(logoURL);
+        final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                // Go back to the main thread and set the image bitmap
-                mainThread.post(() -> mView.setImageBitmap(bmp));
-            } catch (Exception e) {
-                Log.e("ReactImageManager", "Error : " + e.getMessage());
-            }
-        }).start();
-    }
+        // Go back to the main thread and set the image bitmap
+        mainThread.post(() -> mView.setImageBitmap(bmp));
+      } catch (Exception e) {
+        Log.e("ReactImageManager", "Error : " + e.getMessage());
+      }
+    }).start();
+  }
 }
 ```
 
@@ -508,5 +509,53 @@ const MyImageView = requireNativeComponent("MyImageView")
 
 function MyComponent() {
   return <MyImageView style={{ width: 200, height: 100 }} />
+}
+```
+
+#### Kotlin Example
+
+If your project is Kotlin-ready, you can drop in a Kotlin view manager and use it like so:
+
+```kt
+package com.myapp
+
+import android.widget.TextView
+import android.graphics.Color
+import com.facebook.react.uimanager.SimpleViewManager
+import com.facebook.react.uimanager.annotations.ReactProp
+import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.bridge.ReactApplicationContext
+
+class WelcomeViewManager (reactAppContext: ReactApplicationContext) : SimpleViewManager<TextView>() {
+  override fun getName(): String {
+    return "WelcomeView"
+  }
+
+  override fun createViewInstance(reactContext: ThemedReactContext): TextView {
+    val welcomeTextView: TextView = TextView(reactContext)
+    welcomeTextView.text = "WELCOME!"
+    return welcomeTextView
+  }
+
+  @ReactProp(name = "text")
+  fun setTextFromProp(view: TextView, myText: String) {
+    view.text = "${myText.uppercase()}!"
+  }
+
+  @ReactProp(name = "textColor")
+  fun setTextColorFromProp(view: TextView, myTextColor: String) {
+    // set text color
+    view.setTextColor(Color.parseColor(myTextColor))
+  }
+}
+```
+
+Then, in your JSX/TSX:
+
+```jsx
+const WelcomeView = requireNativeComponent("WelcomeView")
+
+function MyWelcomeView() {
+  return <WelcomeView text="Welcome!" textColor="#FFFFFF" style={{ width: 200, height: 100 }} />
 }
 ```
