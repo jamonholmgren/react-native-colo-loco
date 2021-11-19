@@ -28,13 +28,29 @@ yarn add -D react-native-colo-loco
 
 Once you have installed `react-native-colo-loco`, you can try running our setup script.
 
-First, commit any changes, as we don't want to mess anything up. The script won't continue if your git working tree is dirty.
+Then run the provided installation script. This will attempt to automatically patch the necessary files.
 
-Then run `npx install-colo-loco` or `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
+```
+npx install-colo-loco
+# or
+yarn install-colo-loco
+```
 
-_NOTE: It's recommended to run this script with a clean git working tree, if you want to continue without a dirty working tree pass it the `--no-git-check` flag_
+_NOTE: It's recommended to run this script with a clean git working tree; if you want to continue without a dirty working tree pass it the `--no-git-check` flag_
 
-Lastly, run `npx pod-install` and then `npm run ios`/`yarn ios` and `npm run android`/`yarn android` to finish installation and compile.
+Lastly, install pods and run the project to finish installation and compile.
+
+```
+npx pod-install
+
+npm run ios
+# or
+yarn ios
+
+npm run android
+# or
+yarn android
+```
 
 _NOTE: If this doesn't work or you have a non-standard project structure, try the manual instructions below._
 
