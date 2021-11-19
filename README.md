@@ -32,6 +32,8 @@ First, commit any changes, as we don't want to mess anything up. The script won'
 
 Then run `npm run install-colo-loco` or `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
 
+_NOTE: It's recommended to run this script with a clean git working tree, if you want to continue without a dirty working tree pass it the `--no-git-check` flag_
+
 Lastly, run `npx pod-install` and then `npm run ios`/`yarn ios` and `npm run android`/`yarn android` to finish installation and compile.
 
 _NOTE: If this doesn't work or you have a non-standard project structure, try the manual instructions below._

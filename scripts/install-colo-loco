@@ -1,58 +1,75 @@
 #!/usr/bin/env node
 
 const fs = require("fs")
-
-// check if their git working tree is dirty
-if (isGitDirty()) {
-  console.error("Your git working tree is dirty. Please commit or stash your changes before running this script.")
-  process.exit(1)
-}
-
-// get the app name, source folder, and package name from command-line arguments
-const defaults = process.argv.includes("--defaults")
-
 const readline = require("readline")
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 })
 
-const packageFile = fs.existsSync(process.cwd() + "/app.json") ? "app.json" : "package.json"
-const contents = fs.readFileSync(process.cwd() + "/" + packageFile)
-const package = JSON.parse(contents)
+const noGitCheck = process.argv.includes("--no-git-check")
 
-const defaultAppName = pascalCase(package.name)
+let appName, sourceFolder, packageName
 
-// look for existing folders, or default to 'app'
-let defaultSourceFolder = firstExistingFolder(["app", "src", "App", "source", "Source"]) || "app"
+// check if their git working tree is dirty
+if (!noGitCheck && isGitDirty()) {
+  console.error("Your git working tree is dirty.")
 
-const defaultPackageName = `com.${defaultAppName.toLowerCase()}`
+  rl.question("Are you sure you want to continue? [y/N] ", function (answer) {
+    // start setup if user wants to continue and exit if not
+    if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
+      startSetup()
+    } else {
+      console.error("Please commit or stash your changes and re-run the script.")
+      process.exit(1)
+    }
+  })
+} else {
+  // start if git working working tree is clean or user passed the --no-git-check flag
+  startSetup()
+}
 
-let appName = defaultAppName
-let sourceFolder = defaultSourceFolder
-let packageName = defaultPackageName
+function startSetup() {
+  // get the app name, source folder, and package name from command-line arguments
+  const defaults = process.argv.includes("--defaults")
+  const packageFile = fs.existsSync(process.cwd() + "/app.json") ? "app.json" : "package.json"
+  const contents = fs.readFileSync(process.cwd() + "/" + packageFile)
+  const package = JSON.parse(contents)
 
-console.log("Setting up React Native Colo Loco!")
+  const defaultAppName = pascalCase(package.name)
 
-// if we're not using the `--defaults` flag, ask the user for the app name, source folder, and package name
-if (!defaults) {
-  // ask the user for the app name
-  rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
-    // ask the user for the source folder
-    rl.question(`Source folder? [${defaultSourceFolder}] `, function (userSourceFolder) {
-      // ask the user for the app package name
-      rl.question(`App package name? [${defaultPackageName}] `, function (userPackageName) {
-        appName = userAppName || defaultAppName
-        sourceFolder = userSourceFolder || defaultSourceFolder
-        packageName = userPackageName || defaultPackageName
+  // look for existing folders, or default to 'app'
+  let defaultSourceFolder = firstExistingFolder(["app", "src", "App", "source", "Source"]) || "app"
 
-        rl.close()
+  const defaultPackageName = `com.${defaultAppName.toLowerCase()}`
+
+  appName = defaultAppName
+  sourceFolder = defaultSourceFolder
+  packageName = defaultPackageName
+
+  console.log("Setting up React Native Colo Loco!")
+
+  // if we're not using the `--defaults` flag, ask the user for the app name, source folder, and package name
+  if (!defaults) {
+    // ask the user for the app name
+    rl.question(`App name? [${defaultAppName}] `, function (userAppName) {
+      // ask the user for the source folder
+      rl.question(`Source folder? [${defaultSourceFolder}] `, function (userSourceFolder) {
+        // ask the user for the app package name
+        rl.question(`App package name? [${defaultPackageName}] `, function (userPackageName) {
+          appName = userAppName || defaultAppName
+          sourceFolder = userSourceFolder || defaultSourceFolder
+          packageName = userPackageName || defaultPackageName
+
+          rl.close()
+        })
       })
     })
-  })
-  rl.on("close", setupColoLoco)
-} else {
-  setupColoLoco()
+    rl.on("close", setupColoLoco)
+  } else {
+    setupColoLoco()
+  }
 }
 
 function setupColoLoco() {
