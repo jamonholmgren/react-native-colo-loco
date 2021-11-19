@@ -30,7 +30,7 @@ Once you have installed `react-native-colo-loco`, you can try running our setup 
 
 First, commit any changes, as we don't want to mess anything up. The script won't continue if your git working tree is dirty.
 
-Then run `npm run install-colo-loco` or `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
+Then run `npx install-colo-loco` or `yarn install-colo-loco`. This will attempt to automatically patch the necessary files.
 
 _NOTE: It's recommended to run this script with a clean git working tree, if you want to continue without a dirty working tree pass it the `--no-git-check` flag_
 

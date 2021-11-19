@@ -1,6 +1,30 @@
 #!/usr/bin/env node
 
 const fs = require("fs")
+
+const help = process.argv.includes("-h") || process.argv.includes("--help")
+
+if (help) {
+  console.log(" React Native Colo Loco 🤪\n")
+  console.log("    This script automates the installation of React Native Colo Loco")
+  console.log("    which allows you to colocate your native files with your JavaScript files.\n")
+  console.log(" Usage: npx install-colo-loco or yarn install-colo-loco\n")
+  console.log(" Command options:")
+  console.log("    --defaults         Use the defaults (App name, Source folder and Package name.")
+  console.log("    -h, --help         Print usage info.")
+  console.log("    --skip-git-check   Skip git working tree (install with dirty git working tree).")
+  process.exit(0)
+}
+
+// check if their git working tree is dirty
+if (isGitDirty()) {
+  console.error("Your git working tree is dirty. Please commit or stash your changes before running this script.")
+  process.exit(1)
+}
+
+// get the app name, source folder, and package name from command-line arguments
+const defaults = process.argv.includes("--defaults")
+
 const readline = require("readline")
 
 const rl = readline.createInterface({
