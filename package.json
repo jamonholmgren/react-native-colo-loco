@@ -17,5 +17,14 @@
   "prettier": {
     "printWidth": 120,
     "semi": false
+  },
+  "devDependencies": {
+    "jest": "^27.3.1"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0"
   }
 }
