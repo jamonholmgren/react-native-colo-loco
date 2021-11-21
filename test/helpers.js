@@ -1,7 +1,7 @@
 const path = require("path")
 const os = require("os")
 const fs = require("fs-extra")
-const { spawn, spawnSync } = require("child_process")
+const { spawn, execSync } = require("child_process")
 
 const COLO_LOCO = path.join(__dirname, "../scripts/install-colo-loco")
 
@@ -42,7 +42,7 @@ function runColoLoco({ appPath, input = [] } = {}, args = []) {
   })
 }
 
-async function createTempApp({ initGit = false } = {}) {
+async function createTempApp({ initGit = false, setupAndroid = false, setupIOS = false, setupColoLoco = false } = {}) {
   // create temp folder
   const tempDir = path.join(os.tmpdir(), `colo-loco-test-${Math.random()}`)
   await fs.mkdir(tempDir)
@@ -52,7 +52,22 @@ async function createTempApp({ initGit = false } = {}) {
 
   // init git repo
   if (initGit) {
-    spawnSync("git", ["init"], { cwd: tempDir })
+    execSync("git init", { cwd: tempDir, stdio: "ignore" })
+  }
+
+  // setup Colo Loco
+  if (setupColoLoco) {
+    await runColoLoco({ appPath: tempDir }, ["--defaults"])
+  }
+
+  // install NPM packages
+  if (setupAndroid || setupIOS) {
+    execSync("yarn install --silent", { cwd: tempDir, stdio: "ignore" })
+  }
+
+  // install CocoaPods
+  if (setupIOS) {
+    execSync("pod install", { cwd: `${tempDir}/ios`, stdio: "ignore" })
   }
 
   return tempDir
