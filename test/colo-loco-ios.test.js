@@ -1,6 +1,6 @@
 const fs = require("fs-extra")
 
-const { runColoLoco, createTempApp } = require("./helpers")
+const { createTempApp } = require("./helpers")
 
 const APP_NAME = "TestApp"
 
