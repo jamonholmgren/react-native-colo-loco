@@ -1,34 +1,32 @@
 const fs = require("fs-extra")
 
-const { runColoLoco, createTempDir } = require("./helpers")
-
-const APP_NAME = "TestApp"
-const SOURCE_FOLDER = "src"
-const PACKAGE_NAME = "com.testapp"
-const ANDROID_PATH = "android/app/src/main/java/com/testapp"
+const { runColoLoco, createTempApp } = require("./helpers")
 
 const originalDir = process.cwd()
-let tempDir
 
-beforeEach(async () => {
-  tempDir = await createTempDir()
-  process.chdir(tempDir)
-})
+let appPath
 
 afterEach(async () => {
   process.chdir(originalDir)
-  await fs.remove(tempDir)
+  await fs.remove(appPath)
 })
 
 describe("Checking for install-colo-loco. 🤪", () => {
   it("installs correctly", async () => {
-    const { output, error, code } = await runColoLoco({
+    const APP_NAME = "MyApp"
+    const SOURCE_FOLDER = "app"
+    const PACKAGE_NAME = "com.myapp.testing"
+    const ANDROID_PATH = "android/app/src/main/java/com/myapp/testing"
+    appPath = await createTempApp(APP_NAME, SOURCE_FOLDER, PACKAGE_NAME)
+
+    const { output, error, status } = await runColoLoco({
+      appPath,
       appName: APP_NAME,
       sourceFolder: SOURCE_FOLDER,
       packageName: PACKAGE_NAME,
     })
 
-    expect(code).toBe(0)
+    expect(status).toBe(0)
     expect(error).toBe("")
 
     // uses the right defaults (app name & source folder)
@@ -37,24 +35,24 @@ describe("Checking for install-colo-loco. 🤪", () => {
 
     // iOS set up is correct
     // Podfile
-    const podfile = await fs.readFile(`${tempDir}/ios/Podfile`, "utf8")
+    const podfile = await fs.readFile(`${appPath}/ios/Podfile`, "utf8")
     expect(podfile).toContain("react-native-colo-loco/scripts/ios.rb")
     expect(podfile).toContain("link_colocated_native_files")
 
     // Android set up is correct
     // settings.gradle
-    const settingsGradle = await fs.readFile(`${tempDir}/android/settings.gradle`, "utf8")
+    const settingsGradle = await fs.readFile(`${appPath}/android/settings.gradle`, "utf8")
     expect(settingsGradle).toContain("react-native-colo-loco/scripts/android.groovy")
     expect(settingsGradle).toContain("linkColocatedNativeFiles")
     expect(settingsGradle).toContain(PACKAGE_NAME)
 
     // AppPackage.java
-    const appPackage = await fs.readFile(`${tempDir}/${ANDROID_PATH}/${APP_NAME}Package.java`, "utf8")
+    const appPackage = await fs.readFile(`${appPath}/${ANDROID_PATH}/${APP_NAME}Package.java`, "utf8")
     expect(appPackage).toContain("modules.addAll(ColoLoco.colocatedModules(reactContext))")
     expect(appPackage).toContain("modules.addAll(ColoLoco.colocatedViewManagers(reactContext))")
 
     // MainApplication.java
-    const mainApplication = await fs.readFile(`${tempDir}/${ANDROID_PATH}/MainApplication.java`, "utf8")
+    const mainApplication = await fs.readFile(`${appPath}/${ANDROID_PATH}/MainApplication.java`, "utf8")
     expect(mainApplication).toContain(`packages.add(new ${APP_NAME}Package())`)
   })
 })
