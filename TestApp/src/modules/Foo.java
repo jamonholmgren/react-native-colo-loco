@@ -1,3 +1,4 @@
+// Foo.java
 package com.testapp;
 
 import com.facebook.react.bridge.NativeModule;
