@@ -2,8 +2,12 @@ const fs = require("fs-extra")
 
 const { runColoLoco, createTempApp } = require("./helpers")
 
-const originalDir = process.cwd()
+const APP_NAME = "TestApp"
+const SOURCE_FOLDER = "src"
+const PACKAGE_NAME = "com.testapp"
+const ANDROID_PATH = "android/app/src/main/java/com/testapp"
 
+const originalDir = process.cwd()
 let appPath
 
 afterEach(async () => {
@@ -13,17 +17,11 @@ afterEach(async () => {
 
 describe("Checking for install-colo-loco. 🤪", () => {
   it("installs correctly", async () => {
-    const APP_NAME = "MyApp"
-    const SOURCE_FOLDER = "app"
-    const PACKAGE_NAME = "com.myapp.testing"
-    const ANDROID_PATH = "android/app/src/main/java/com/myapp/testing"
-    appPath = await createTempApp(APP_NAME, SOURCE_FOLDER, PACKAGE_NAME)
+    appPath = await createTempApp()
 
     const { output, error, status } = await runColoLoco({
       appPath,
-      appName: APP_NAME,
-      sourceFolder: SOURCE_FOLDER,
-      packageName: PACKAGE_NAME,
+      input: [APP_NAME, SOURCE_FOLDER, PACKAGE_NAME],
     })
 
     expect(status).toBe(0)
@@ -54,5 +52,52 @@ describe("Checking for install-colo-loco. 🤪", () => {
     // MainApplication.java
     const mainApplication = await fs.readFile(`${appPath}/${ANDROID_PATH}/MainApplication.java`, "utf8")
     expect(mainApplication).toContain(`packages.add(new ${APP_NAME}Package())`)
+  })
+
+  it("uses good defaults when using --defaults", async () => {
+    appPath = await createTempApp()
+
+    const { output, status } = await runColoLoco({ appPath }, ["--defaults"])
+
+    expect(status).toBe(0)
+    expect(output).toContain(APP_NAME)
+    expect(output).toContain(SOURCE_FOLDER)
+  })
+
+  it("stops if git working tree is diry and user don't continue", async () => {
+    appPath = await createTempApp({ initGit: true })
+    const { output, error, status } = await runColoLoco({
+      appPath,
+      input: ["N"],
+    })
+    expect(status).toBe(1)
+    expect(error).toContain("git working tree is dirty")
+    expect(error).toContain("commit or stash your changes")
+  })
+
+  it("continues if git working tree is diry and user wants to continue", async () => {
+    appPath = await createTempApp({ initGit: true })
+
+    const { error, output, status } = await runColoLoco({
+      appPath,
+      input: ["y", APP_NAME, SOURCE_FOLDER, PACKAGE_NAME],
+    })
+
+    expect(status).toBe(0)
+    expect(error).toContain("git working tree is dirty")
+    expect(output).toContain(APP_NAME)
+    expect(output).toContain(SOURCE_FOLDER)
+  })
+
+  it("skips git check when passing --no-git-check", async () => {
+    appPath = await createTempApp({ initGit: true })
+
+    const { output, status } = await runColoLoco({ appPath, input: [APP_NAME, SOURCE_FOLDER, PACKAGE_NAME] }, [
+      "--no-git-check",
+    ])
+
+    expect(status).toBe(0)
+    expect(output).toContain(APP_NAME)
+    expect(output).toContain(SOURCE_FOLDER)
   })
 })
