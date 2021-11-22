@@ -66,6 +66,15 @@ async function createTempApp({ initGit = false, setupAndroid = false, setupIOS =
   // install NPM packages
   if (setupAndroid || setupIOS) {
     execSync("yarn install --silent", { cwd: tempDir, stdio })
+
+    // copy colo-loco scripts to temp folder
+    if (setupColoLoco) {
+      await fs.copy(
+        path.join(__dirname, "../scripts"),
+        path.join(tempDir, "node_modules/react-native-colo-loco/scripts"),
+        { recursive: true }
+      )
+    }
   }
 
   // install CocoaPods
