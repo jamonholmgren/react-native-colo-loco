@@ -6,7 +6,7 @@ const { spawn, execSync } = require("child_process")
 const VERBOSE = Boolean(process.env.VERBOSE)
 const stdio = VERBOSE ? "inherit" : "ignore"
 
-const COLO_LOCO = path.join(__dirname, "../scripts/install-colo-loco")
+const INSTALL_COLO_LOCO = path.join(__dirname, "../scripts/install-colo-loco")
 
 /**
  * Runs `install-colo-loco` and passes it the given `appName`, `sourceFolder` and `packageName`.
@@ -22,7 +22,7 @@ const COLO_LOCO = path.join(__dirname, "../scripts/install-colo-loco")
  */
 function runColoLoco({ appPath, input = [] } = {}, args = []) {
   return new Promise((resolve) => {
-    const cp = spawn("node", [COLO_LOCO, ...args], { cwd: appPath })
+    const cp = spawn("node", [INSTALL_COLO_LOCO, ...args], { cwd: appPath })
 
     // store stdout in `output` variable
     let output = ""
