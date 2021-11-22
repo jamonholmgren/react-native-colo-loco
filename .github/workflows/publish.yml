@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - run: yarn install --frozen-lockfile
       - name: Semantic Release
         run: "yarn ci:publish"
         env:
