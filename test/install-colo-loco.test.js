@@ -75,7 +75,7 @@ describe("Checking for install-colo-loco. 🤪", () => {
     expect(error).toContain("commit or stash your changes")
   })
 
-  it("continues if git working tree is diry and user wants to continue", async () => {
+  it("continues if git working tree is dirty and user wants to continue", async () => {
     appPath = await createTempApp({ initGit: true })
 
     const { error, output, status } = await runColoLoco({
