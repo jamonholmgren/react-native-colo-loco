@@ -19,12 +19,11 @@
     "semi": false
   },
   "devDependencies": {
+    "fs-extra": "^10.0.0",
     "jest": "^27.3.1"
   },
   "scripts": {
     "test": "jest"
   },
-  "dependencies": {
-    "fs-extra": "^10.0.0"
-  }
+  "dependencies": {}
 }

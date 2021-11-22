@@ -48,7 +48,7 @@ async function createTempApp({ initGit = false, setupAndroid = false, setupIOS =
   await fs.mkdir(tempDir)
 
   // copy TestApp to temp folder
-  await fs.copy(path.join(__dirname, "../TestApp"), tempDir)
+  await fs.copy(path.join(__dirname, "./TestApp"), tempDir)
 
   // init git repo
   if (initGit) {
