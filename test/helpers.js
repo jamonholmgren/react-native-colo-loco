@@ -67,7 +67,7 @@ async function createTempApp({ initGit = false, setupAndroid = false, setupIOS =
 
   // install CocoaPods
   if (setupIOS) {
-    // execSync("pod install", { cwd: `${tempDir}/ios`, stdio: "ignore" })
+    execSync("pod install", { cwd: `${tempDir}/ios`, stdio: "ignore" })
   }
 
   // run `./gradlew clean` to link colocated files
