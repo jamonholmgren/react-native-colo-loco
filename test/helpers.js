@@ -3,6 +3,9 @@ const os = require("os")
 const fs = require("fs-extra")
 const { spawn, execSync } = require("child_process")
 
+const VERBOSE = Boolean(process.env.VERBOSE)
+const stdio = VERBOSE ? "inherit" : "ignore"
+
 const COLO_LOCO = path.join(__dirname, "../scripts/install-colo-loco")
 
 /**
@@ -52,7 +55,7 @@ async function createTempApp({ initGit = false, setupAndroid = false, setupIOS =
 
   // init git repo
   if (initGit) {
-    execSync("git init", { cwd: tempDir, stdio: "ignore" })
+    execSync("git init", { cwd: tempDir, stdio })
   }
 
   // setup Colo Loco
@@ -62,17 +65,17 @@ async function createTempApp({ initGit = false, setupAndroid = false, setupIOS =
 
   // install NPM packages
   if (setupAndroid || setupIOS) {
-    execSync("yarn install --silent", { cwd: tempDir, stdio: "ignore" })
+    execSync("yarn install --silent", { cwd: tempDir, stdio })
   }
 
   // install CocoaPods
   if (setupIOS) {
-    execSync("pod install", { cwd: `${tempDir}/ios`, stdio: "ignore" })
+    execSync("pod install", { cwd: `${tempDir}/ios`, stdio })
   }
 
   // run `./gradlew clean` to link colocated files
   if (setupAndroid) {
-    execSync("./gradlew clean", { cwd: `${tempDir}/android`, stdio: "ignore" })
+    execSync("./gradlew clean", { cwd: `${tempDir}/android`, stdio })
   }
 
   return tempDir
