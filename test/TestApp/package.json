@@ -1,0 +1,10 @@
+{
+  "name": "testapp",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "react": "17.0.2",
+    "react-native": "0.66.3",
+    "react-native-colo-loco": "latest"
+  }
+}
