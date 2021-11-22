@@ -26,7 +26,8 @@
   },
   "scripts": {
     "test": "jest",
-    "ci:publish": "yarn semantic-release"
+    "ci:publish": "yarn semantic-release",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {},
   "release": {
