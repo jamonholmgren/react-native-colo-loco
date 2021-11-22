@@ -16,3 +16,13 @@ jobs:
           node-version: 14.x
       - run: yarn install --frozen-lockfile
       - run: yarn test test/install-colo-loco.test.js test/colo-loco-android.test.js
+  test-ios:
+    runs-on: macos-latest
+    name: Test iOS
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn test test/colo-loco-ios.test.js
