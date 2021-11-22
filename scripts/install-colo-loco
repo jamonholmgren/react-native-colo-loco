@@ -16,15 +16,7 @@ if (help) {
   process.exit(0)
 }
 
-// check if their git working tree is dirty
-if (isGitDirty()) {
-  console.error("Your git working tree is dirty. Please commit or stash your changes before running this script.")
-  process.exit(1)
-}
-
 // get the app name, source folder, and package name from command-line arguments
-const defaults = process.argv.includes("--defaults")
-
 const readline = require("readline")
 
 const rl = readline.createInterface({
