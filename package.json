@@ -19,11 +19,32 @@
     "semi": false
   },
   "devDependencies": {
+    "@semantic-release/git": "^10.0.1",
     "fs-extra": "^10.0.0",
-    "jest": "^27.3.1"
+    "jest": "^27.3.1",
+    "semantic-release": "^18.0.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "ci:publish": "yarn semantic-release"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": "package.json",
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  }
 }
