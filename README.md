@@ -1,18 +1,12 @@
 # React Native Colo Loco 🤪
 
-Ever wanted to colocate your native Swift, Kotlin, Objective-C, and Java files with your React Native JavaScript/TypeScript files?
+Have you ever needed to write a native iOS and Android module but find yourself deep in Stackoverflow and digging through Xcode and Android Studio?
 
-Now you can!
+This library makes it as simple as dropping your Objective-C, Java, Swift, and Kotlin files right next to your JavaScript/TypeScript files.
+
+Colo Loco will find your colocated native files, automatically link them up to the Xcode and Android Studio projects, and you can focus on your code.
 
 ![Colo Loco in action](https://user-images.githubusercontent.com/1479215/141171825-7dd5afa7-eb75-44ea-b653-04372a47e710.png)
-
-## Why?
-
-Integrating native modules and components into a React Native app is one of the more powerful and underutilized features of React Native.
-
-When you use Colo Loco, you don't have to do the lengthy manual setup for both iOS and Android, nor do you have to open Xcode, Android Studio, or be digging through the `./ios` and `./android` folders.
-
-You just drop in your native files, run `pod install`, and then import your native modules and components into your JavaScript/TypeScript files and build your app! Colo Loco will find your native files, automatically link them up to the Xcode and Android Studio projects, and you can focus on your code.
 
 ## Installation
 

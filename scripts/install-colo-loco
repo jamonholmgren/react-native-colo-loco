@@ -49,11 +49,10 @@ if (!noGitCheck && isGitDirty()) {
 function startSetup() {
   // get the app name, source folder, and package name from command-line arguments
   const defaults = process.argv.includes("--defaults")
-  const packageFile = fs.existsSync(process.cwd() + "/app.json") ? "app.json" : "package.json"
-  const contents = fs.readFileSync(process.cwd() + "/" + packageFile)
-  const package = JSON.parse(contents)
+  const appJSON = JSON.parse(fs.readFileSync(process.cwd() + "/app.json"))
+  const packageJSON = JSON.parse(fs.readFileSync(process.cwd() + "/package.json"))
 
-  const defaultAppName = pascalCase(package.name)
+  const defaultAppName = pascalCase(appJSON?.name || appJSON?.expo?.name || packageJSON.name || "MyApp")
 
   // look for existing folders, or default to 'app'
   let defaultSourceFolder = firstExistingFolder(["app", "src", "App", "source", "Source"]) || "app"
@@ -183,6 +182,7 @@ public class ${appName}Package implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
       List<ViewManager> modules = new ArrayList<>();
 
+      // Add all react-native-colo-loco view managers from ./colocated/ColoLoco.java
       modules.addAll(ColoLoco.colocatedViewManagers(reactContext));
 
       return modules;
@@ -238,6 +238,8 @@ function isGitDirty() {
 
 // function to pascalcase a string
 function pascalCase(str) {
+  if (typeof str !== "string") return str
+
   return str
     .split("-")
     .map((part) => {
