@@ -7,8 +7,6 @@ const APP_NAME = "TestApp"
 const originalDir = process.cwd()
 let appPath
 
-jest.setTimeout(30000) // 30 seconds
-
 beforeEach(async () => {
   appPath = await createTempApp({ setupIOS: true, setupColoLoco: true })
   process.chdir(appPath)
