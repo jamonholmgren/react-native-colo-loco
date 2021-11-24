@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 // TL;DR: This file is included and executed from `./android/settings.gradle`
 // like this:
 //
@@ -61,19 +64,18 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   }
 
   // remove the 'colocated' folder if it exists in the androidPath
-  def rmdirCommand = "rmdir ${androidPath}/colocated"
-  rmdirCommand.execute()
+  def colocatedFolder = new File("${System.getProperty('user.dir')}/${androidPath}/colocated")
+  if (colocatedFolder.exists()) colocatedFolder.delete()
 
   // create the `colocated` folder in the androidPath
-  def mkdirCommand = "mkdir -p ${androidPath}/colocated"
-  mkdirCommand.execute()
-  
+  colocatedFolder.mkdir()
+
   // loop through filesToColocate and colocate the files
   for (fileToColocate in filesToColocate) {
     // shell out to ln to make a hardlink to the file in the android path
-    def lnCommand = "ln ${fileToColocate.absolutePath} ${androidPath}/colocated/${fileToColocate.name}"
-    // run the lnCommand
-    lnCommand.execute()
+    def linkPath = Paths.get("${System.getProperty('user.dir')}/${androidPath}/colocated/${fileToColocate.name}")
+    def filePath = Paths.get(fileToColocate.absolutePath)
+    Files.createLink(linkPath, filePath)
   }
 
     // create the manifest file
