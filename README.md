@@ -12,6 +12,8 @@ Colo Loco will find your colocated native files, automatically link them up to t
 
 _Note that Colo Loco doesn't (yet) support Expo._
 
+_Also note that Colo Loco is already included if you created your app using the best React Native app generator, [Ignite](https://github.com/infinitered/ignite)!_
+
 Add Colo Loco to your development dependencies:
 
 ```

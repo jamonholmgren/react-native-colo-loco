@@ -65,7 +65,7 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
 
   // remove the 'colocated' folder if it exists in the androidPath
   def colocatedFolder = new File("${System.getProperty('user.dir')}/${androidPath}/colocated")
-  if (colocatedFolder.exists()) colocatedFolder.delete()
+  if (colocatedFolder.exists()) colocatedFolder.deleteDir()
 
   // create the `colocated` folder in the androidPath
   colocatedFolder.mkdir()
