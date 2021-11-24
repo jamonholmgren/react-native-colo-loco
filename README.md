@@ -8,6 +8,17 @@ Colo Loco will find your colocated native files, automatically link them up to t
 
 ![Colo Loco in action](https://user-images.githubusercontent.com/1479215/141171825-7dd5afa7-eb75-44ea-b653-04372a47e710.png)
 
+<table>
+<tr>
+<td>
+<img src="https://user-images.githubusercontent.com/1479215/143302440-aac06fbb-21ed-492a-85e3-eaee375740b3.png" width="200" alt="iOS simulator showing native alert popup" />
+</td>
+<td>
+<img src="https://user-images.githubusercontent.com/1479215/143302906-1402b95f-6e53-429f-9013-a0de3ecb1f9e.png" width="200" alt="Android emulator showing native alert pop-up" />
+</td>
+</tr>
+</table>
+
 ## Installation
 
 _Note that Colo Loco doesn't (yet) support Expo._
@@ -89,6 +100,7 @@ public class MyAppPackage implements ReactPackage {
    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
       List<ViewManager> modules = new ArrayList<>();
 
+      // Add all react-native-colo-loco native view managers from ./colocated/ColoLoco.java
       modules.addAll(ColoLoco.colocatedViewManagers(reactContext));
 
       return modules;
@@ -212,6 +224,8 @@ Jamon.hello()
 Run `npx pod-install` in your terminal and then run your project with `yarn ios` (or `yarn react-native run-ios`).
 
 You should see the native alert pop up in your app!
+
+<img src="https://user-images.githubusercontent.com/1479215/143302440-aac06fbb-21ed-492a-85e3-eaee375740b3.png" width="200" alt="iOS simulator showing native alert popup" />
 
 Hint: You can read a lot more about iOS native modules here: [https://reactnative.dev/docs/native-modules-ios](https://reactnative.dev/docs/native-modules-ios)
 
@@ -342,6 +356,8 @@ const { Jamon } = NativeModules
 
 Jamon.hello()
 ```
+
+<img src="https://user-images.githubusercontent.com/1479215/143302247-48af4a07-b4c3-4b05-9f6c-70c66566ed75.png" width="200" alt="Android emulator showing native alert pop-up" />
 
 #### Android Kotlin Example
 
