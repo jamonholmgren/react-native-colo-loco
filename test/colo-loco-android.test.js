@@ -23,10 +23,14 @@ describe("Checking Colo Loco on Android. 🤪", () => {
 
     expect(fs.existsSync(`${COLOCATED}/Foo.java`)).toBeTruthy()
     expect(fs.existsSync(`${COLOCATED}/FooViewManager.java`)).toBeTruthy()
+    expect(fs.existsSync(`${COLOCATED}/Bar.kt`)).toBeTruthy()
+    expect(fs.existsSync(`${COLOCATED}/BarViewManager.kt`)).toBeTruthy()
     expect(fs.existsSync(`${COLOCATED}/ColoLoco.java`)).toBeTruthy()
 
     const manifestFile = await fs.readFile(`${COLOCATED}/ColoLoco.java`, "utf8")
     expect(manifestFile).toContain("modules.add(new Foo(reactContext))")
+    expect(manifestFile).toContain("modules.add(new Bar(reactContext))")
     expect(manifestFile).toContain("viewManagers.add(new FooViewManager(reactContext))")
+    expect(manifestFile).toContain("viewManagers.add(new BarViewManager(reactContext))")
   })
 })

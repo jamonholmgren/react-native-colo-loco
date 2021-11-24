@@ -1,16 +1,24 @@
-import java.nio.file.Files
-import java.nio.file.Paths
-
 // TL;DR: This file is included and executed from `./android/settings.gradle`
 // like this:
 //
 // apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
 // linkColocatedNativeFiles([ appName: rootProject.name, appPath: "../app", appPackageName: "com.myapp", androidPath: "./android/app/src/main/java/com/myapp" ])
+
+import java.util.regex.Pattern
+import java.util.regex.Matcher
+import java.nio.file.Files
+import java.nio.file.Paths
+
 ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   // strip "./android/" from the androidPath
   def androidPath = customOptions.androidPath.replace("android/", "")
 
+  // get all of the colocated Java and Kotlin files
+  def colocatedKotlinFiles = new FileNameFinder().getFileNames("${System.getProperty('user.dir')}/${customOptions.appPath}", "**/*.kt", "")
   def colocatedJavaFiles = new FileNameFinder().getFileNames("${System.getProperty('user.dir')}/${customOptions.appPath}", "**/*.java", "")
+
+  // combine colocatedKotlinFiles and colocatedJavaFiles
+  def allColocatedFiles = colocatedKotlinFiles + colocatedJavaFiles
 
   // make an array to hold the files to be colocated
   def filesToColocate = new ArrayList<File>()
@@ -18,8 +26,8 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   def moduleInstantiationString = ""
   def viewManagerInstantiationString = ""
 
-  // loop through colocatedJavaFiles and check if the class name matches the file name
-  for (filepath in colocatedJavaFiles) {
+  // loop through allColocatedFiles and check if the class name matches the file name
+  for (filepath in allColocatedFiles) {
     // read file from filepath
     def file = new File(filepath)
     
@@ -34,10 +42,15 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
 
     // if classString is found, get the class name
     if (classIndex != -1) {
-      def restOfClass = fileText.substring(classIndex + classString.length(), fileText.length())
-
+      // def restOfClass = fileText.substring(classIndex + classString.length(), fileText.length())
       // get the first word from the restOfClass as className
-      def className = restOfClass.substring(0, restOfClass.indexOf(" "))
+      // def className = restOfClass.substring(0, restOfClass.indexOf(" "))
+
+      // use regex to get the className
+      def classNamePattern = Pattern.compile("class ([a-zA-Z0-9_]+)")
+      def matcher = classNamePattern.matcher(fileText)
+      matcher.find()
+      def className = matcher.group(1)
 
       // get the filename without the extension
       def fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."))
