@@ -7,8 +7,6 @@ const ANDROID_PATH = "android/app/src/main/java/com/testapp"
 const originalDir = process.cwd()
 let appPath
 
-jest.setTimeout(30000) // 30 seconds
-
 beforeEach(async () => {
   appPath = await createTempApp({ setupAndroid: true, setupColoLoco: true })
   process.chdir(appPath)
