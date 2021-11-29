@@ -603,11 +603,27 @@ function MyWelcomeView() {
 
 You should see the text show up in your app!
 
-# License
+## License
 
 This package is licensed under the MIT license.
 
-# Learn More / Troubleshooting
+## Limitations/Assumptions
+
+### Android assumptions
+
+On Android, our assumption is that your native files live in your app's main package (`com.yourpackage`). If you need them to live in their own package, you may not be able to colocate those files.
+
+We've considered adding some magic comments to allow for more fine-grained control over package imports and instantiation. For example, something like this (it's not implemented yet so don't try it):
+
+```java
+// @import-template import com.myotherpackage
+// @instantiation-template new MyModule(null, "Hello", false)
+// @instantiate false
+```
+
+However, these are edge-cases, and likely best if you create your own package / imports in the `./android/src/...` folder yourself.
+
+## Troubleshooting
 
 1. On iOS, make sure you've run `npx pod-install` to link any new / changed native modules before building your app
 2. If you're getting obscure native errors, try opening the project in Android Studio or Xcode and building from there to get more targeted errors
