@@ -1,6 +1,6 @@
 # React Native Colo Loco 🤪
 
-Have you ever needed to write a native iOS and Android module but find yourself deep in Stackoverflow and digging through Xcode and Android Studio?
+Have you ever needed to write a native iOS and Android module but find yourself deep in Stack Overflow and digging through Xcode and Android Studio?
 
 This library makes it as simple as dropping your Objective-C, Java, Swift, and Kotlin files right next to your JavaScript/TypeScript files.
 
