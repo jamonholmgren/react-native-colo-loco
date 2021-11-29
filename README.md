@@ -23,12 +23,12 @@ Colo Loco will find your colocated native files, automatically link them up to t
 
 _Note that Colo Loco doesn't (yet) support Expo._
 
-_Also note that Colo Loco is already included if you created your app using the best React Native app generator, [Ignite](https://github.com/infinitered/ignite)!_
+_Also note that Colo Loco is already included if you created your app using our popular React Native app generator, [Ignite](https://github.com/infinitered/ignite)!_
 
 Add Colo Loco to your development dependencies:
 
 ```
-npm install --save-dev react-native-colo-loco
+npm install -D react-native-colo-loco
 # or
 yarn add -D react-native-colo-loco
 ```
@@ -37,8 +37,6 @@ Once you have installed `react-native-colo-loco`, you can try running our setup 
 
 ```
 npx install-colo-loco
-# or
-yarn install-colo-loco
 ```
 
 _NOTE: It's recommended to run this script with a clean git working tree; if you want to continue without a dirty working tree pass it the `--no-git-check` flag_
@@ -47,14 +45,8 @@ Lastly, install pods and run the project to finish installation and compile.
 
 ```
 npx pod-install
-
 npm run ios
-# or
-yarn ios
-
 npm run android
-# or
-yarn android
 ```
 
 _NOTE: If this doesn't work or you have a non-standard project structure, try the manual instructions below._
@@ -154,7 +146,7 @@ Now, when you run `yarn android`, it'll hardlink your `.java` files into a `colo
 
 ## Usage
 
-For native Objective-C and Java modules, place your .m, .h, .swift, and .java files anywhere near your JavaScript/JSX files. They'll be linked in automatically when you run `npx pod-install` or `pod install`, or in Android's case, when you run `npm run android` / `yarn android`.
+For native iOS and Android modules and view managers, place your .m, .h, .swift, .java, and .kt files anywhere near your JavaScript/JSX files. They'll be linked in automatically when you run `pod install`, or in Android's case, when you run `npm run android`. If the filename ends in \*ViewManager, it'll be linked as a view manager.
 
 ```
 ios/
@@ -162,16 +154,19 @@ android/
 app/
   components/
     MyButton.tsx
-    MyButton.h
-    MyButton.m
-    MyButton.java
+    MyNativeButtonViewManager.h
+    MyNativeButtonViewManager.m
+    MyNativeButtonViewManager.java
+    MyNativeModule.h
+    MyNativeModule.m
+    MyNativeModule.java
 ```
 
 ## Examples
 
-### Objective-C Example
+### iOS Objective-C Example
 
-Let's build a small native module.
+Let's build a small native module that shows an alert.
 
 In a fresh React Native project, install `react-native-colo-loco` (see instructions above) and then make a folder called `app`. Place two files inside of that -- `Jamon.h` and `Jamon.m`.
 
@@ -229,88 +224,7 @@ You should see the native alert pop up in your app!
 
 Hint: You can read a lot more about iOS native modules here: [https://reactnative.dev/docs/native-modules-ios](https://reactnative.dev/docs/native-modules-ios)
 
-#### Swift Example
-
-Swift requires a bit more setup, but after that you should be able to drop in `.swift` files and have them work. Unfortunately, as of now, Swift files still require a `.m` file to expose them to React Native, so you'll still be making two files.
-
-<details>
-  <summary>To set up Swift in your project (only has to be done once), click here to expand.</summary>
-
-First, open your xcworkspace file (in the `./ios` folder) in Xcode.
-
-Click File -> New -> New File in the menu (or hit Cmd+N).
-
-Choose "Swift File" under the `Source` section. Name it something like `EnableSwift` and click Create.
-
-Xcode should prompt you with this prompt:
-`Would you like to configure an Objective-C bridging header?`
-
-Click `Create bridging header` (this is key).
-
-Inside that file, add this line:
-
-```objective-c
-//
-//  Use this file to import your target's public headers that you would like to expose to Swift.
-//
-#import <React/RCTBridgeModule.h>
-```
-
-Save it, and you now have Swift support. You can close Xcode and let your Mac take a breather.
-
-</details>
-
-Now, it's just a matter of adding Swift files to your project. Inside the `./app` folder you created in the previous section, add the following `Gant.swift` file:
-
-```swift
-// Gant.swift
-import Foundation
-import UIKit
-
-@objc(Gant)
-class Gant : NSObject {
-  @objc func hello() {
-    // Alerts have to go on the main thread
-    DispatchQueue.main.async {
-      let alert = UIAlertView(
-        title: "Hello from native!",
-        message: "This is from Gant.swift",
-        delegate: nil,
-        cancelButtonTitle: "Cancel",
-        otherButtonTitles: "Say Hello"
-      )
-      alert.show()
-    }
-  }
-}
-```
-
-Also add a `Gant.m` file next to it to export it to React Native:
-
-```objective-c
-// Gant.m
-#import <React/RCTBridgeModule.h>
-
-@interface RCT_EXTERN_MODULE(Gant, NSObject)
-RCT_EXTERN_METHOD(hello)
-+ (BOOL)requiresMainQueueSetup { return NO; }
-@end
-```
-
-In your `App.js`, just use it like you did the `Jamon` native module:
-
-```jsx
-import { NativeModules } from "react-native"
-const { Gant } = NativeModules
-
-Gant.hello()
-```
-
-Don't forget to run `npx pod-install` (or `pod install` from the ios folder) to link up the new native files.
-
-Then run `yarn ios` to recompile. You should see the alert pop up! Yay!
-
-## Android example
+### Android Java example
 
 Create a file called `Jamon.java` and drop it into your app folder next to your JSX/TSX files.
 
@@ -359,13 +273,128 @@ Jamon.hello()
 
 <img src="https://user-images.githubusercontent.com/1479215/143302247-48af4a07-b4c3-4b05-9f6c-70c66566ed75.png" width="200" alt="Android emulator showing native alert pop-up" />
 
-#### Android Kotlin Example
+### iOS Swift Example
 
-TODO, but to get you started, you can check out this project:
+Swift requires a bit more setup, but after that you should be able to drop in `.swift` files and have them work. Unfortunately, as of now, Swift files still require a `.m` file to expose them to React Native, so you'll still be making two files.
 
-https://github.com/infinitered/DiveIntoNativeUpdate#android
+_Note that if you used a recent version of [Ignite](https://github.com/infinitered/ignite) to create your app, Swift is already set up._
 
-Colo Loco hasn't yet been tested with Kotlin files, so expect some bugs along the way.
+<details>
+  <summary>To set up Swift in your project (only has to be done once), click here to expand.</summary>
+
+First, open your xcworkspace file (in the `./ios` folder) in Xcode.
+
+Click File -> New -> New File in the menu (or hit Cmd+N).
+
+Choose "Swift File" under the `Source` section. Name it something like `EnableSwift` and click Create.
+
+Xcode should prompt you with this prompt:
+`Would you like to configure an Objective-C bridging header?`
+
+Click `Create bridging header` (this is key).
+
+Inside that file, add this line:
+
+```objc
+//
+//  Use this file to import your target's public headers that you would like to expose to Swift.
+//
+#import <React/RCTBridgeModule.h>
+```
+
+Save it, and you now have Swift support. You can close Xcode and let your Mac take a breather.
+
+</details>
+
+Now, it's just a matter of adding Swift files to your project. Inside the `./app` folder you created in the previous section, add the following `Gant.swift` file:
+
+```swift
+// Gant.swift
+import Foundation
+import UIKit
+
+@objc(Gant)
+class Gant : NSObject {
+  @objc func hello() {
+    // Alerts have to go on the main thread
+    DispatchQueue.main.async {
+      let alert = UIAlertView(
+        title: "Hello from native!",
+        message: "This is from Gant.swift",
+        delegate: nil,
+        cancelButtonTitle: "Cancel",
+        otherButtonTitles: "Say Hello"
+      )
+      alert.show()
+    }
+  }
+}
+```
+
+Also add a `Gant.m` file next to it to export it to React Native:
+
+```objc
+// Gant.m
+#import <React/RCTBridgeModule.h>
+
+@interface RCT_EXTERN_MODULE(Gant, NSObject)
+RCT_EXTERN_METHOD(hello)
++ (BOOL)requiresMainQueueSetup { return NO; }
+@end
+```
+
+In your `App.js`, just use it like you did the `Jamon` native module:
+
+```jsx
+import { NativeModules } from "react-native"
+const { Gant } = NativeModules
+
+Gant.hello()
+```
+
+Don't forget to run `npx pod-install` to link up the new native files.
+
+Then run `yarn ios` to recompile. You should see the alert pop up! Yay!
+
+### Android Kotlin Example
+
+Create a file called `Gant.kt` in your `app` folder and drop in these contents:
+
+```kotlin
+package com.myapp // change to your package name
+
+import android.app.AlertDialog
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+
+// change to your app's package name
+class Gant internal constructor(context: ReactApplicationContext?) : ReactContextBaseJavaModule(context) {
+    override fun getName(): String {
+        return "Gant"
+    }
+
+    @ReactMethod
+    fun hello() {
+        // Display a pop-up alert
+        val builder = AlertDialog.Builder(currentActivity)
+        builder.setMessage("Hi, everybody!")
+                .setTitle("Gant")
+                .setPositiveButton("OK", null)
+        val dialog = builder.create()
+        dialog.show()
+    }
+}
+```
+
+In your `App.js`, just use it like you did the `Jamon` Java native module:
+
+```jsx
+import { NativeModules } from "react-native"
+const { Gant } = NativeModules
+
+Gant.hello()
+```
 
 ## Native UI Components
 
@@ -377,7 +406,7 @@ To create a native iOS UI component, you can add a ViewManager Objective-C file 
 
 Here's an example that downloads and shows a remote image:
 
-```objective-c
+```objc
 // app/components/MyImageViewManager.h
 #import <React/RCTViewManager.h>
 #import "UIKit/UIKit.h"
@@ -385,7 +414,7 @@ Here's an example that downloads and shows a remote image:
 @end
 ```
 
-```objective-c
+```objc
 // app/components/MyImageViewManager.m
 #import "MyImageViewManager.h"
 
@@ -571,3 +600,19 @@ function MyWelcomeView() {
   return <WelcomeView text="Welcome!" textColor="#FFFFFF" style={{ width: 200, height: 100 }} />
 }
 ```
+
+You should see the text show up in your app!
+
+# License
+
+This package is licensed under the MIT license.
+
+# Learn More / Troubleshooting
+
+1. On iOS, make sure you've run `npx pod-install` to link any new / changed native modules before building your app
+2. If you're getting obscure native errors, try opening the project in Android Studio or Xcode and building from there to get more targeted errors
+3. If you think the issue is with React Native Colo Loco, try creating a brand-new app using the instructions earlier in the README and replicate the problem there. Then file an issue with a link to the replication repo. Issues without replication steps or repos will most likely be closed without resolution because who's got time for that?
+
+If you continue having problems, join the Infinite Red Slack community at https://community.infinite.red and ask in the #react-native channel. Make sure to mention you are using React Native Colo Loco.
+
+If you need help from pros, consider hiring [Infinite Red](https://infinite.red/reactnative), my React Native consulting company.
