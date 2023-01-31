@@ -50,11 +50,12 @@ def link_colocated_native_files(options = {})
 
     puts "Adding co-located native files from #{app_path} to Xcode project"
     colocated_files.each do |file|
+      relative_file_path = Pathname.new(file).realpath
       puts "Adding #{file}"
       # if colocated_group.files.map(&:path).include?(file)
       #   puts "File already exists in Xcode project"
       # else
-        new_file = colocated_group.new_file(file)
+        new_file = colocated_group.new_file(relative_file_path)
 
         # add the new file to all targets
         project.targets.each do |target|
