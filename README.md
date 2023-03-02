@@ -19,6 +19,10 @@ Colo Loco will find your colocated native files, automatically link them up to t
 </tr>
 </table>
 
+### Watch Jamon show how to use React Native Colo Loco!
+
+<a href="https://www.youtube.com/watch?v=gfORZXq4ZgE" target="_blank"><img width="500" alt="CleanShot 2023-03-02 at 08 31 33@2x" src="https://user-images.githubusercontent.com/1479215/222491788-3df92769-cd9d-4ab8-9b35-54cd427f36a9.png"><a/>
+
 ## Installation
 
 _Note that Colo Loco doesn't (yet) support Expo._
