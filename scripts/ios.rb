@@ -38,36 +38,36 @@ def link_colocated_native_files(options = {})
     # check if the "Colocated" group exists
     existing_group = file_group['Colocated']
 
-    # remove all files from the existing colocated file_group
-    # this is to ensure that we don't have duplicates or other issues
+    # Create the group if it doesn't exist
+    colocated_group = existing_group || file_group.new_group('Colocated')
+
+    # Remove files from the existing colocated file_group that are not present in the colocated_files array
     if existing_group
       existing_group.files.each do |file|
+        next if colocated_files.include?(file.real_path.to_s) # Skip files that are already in the colocated_files array
         file.remove_from_project
       end
     end
 
-    # Create the group if it doesn't exist
-    colocated_group = existing_group || file_group.new_group('Colocated')
-
     puts "Adding co-located native files from #{app_path} to Xcode project"
     colocated_files.each do |file|
       relative_file_path = Pathname.new(file).realpath
-      puts "Adding #{file}"
-      # if colocated_group.files.map(&:path).include?(file)
-      #   puts "File already exists in Xcode project"
-      # else
-        new_file = colocated_group.new_file(relative_file_path)
+      
+      # Skip files that are already in the colocated_group
+      next if colocated_group.files.map(&:real_path).include?(relative_file_path)
 
-        # add the new file to all targets
-        project.targets.each do |target|
-          if excluded_targets.include?(target.name)
-            # Skipping #{target.name} because it is in the excluded_targets list
-            next
-          end
-          target.add_file_references([new_file])
-        end
-      # end
+      puts "Adding #{file}"
+      new_file = colocated_group.new_file(relative_file_path)
+      
+      # add the new file to all targets
+      project.targets.each do |target|
+        # Skipping #{target.name} because it is in the excluded_targets list
+        next if excluded_targets.include?(target.name)
+        
+        target.add_file_references([new_file])
+      end
     end
+
     project.save
   else
     puts "No colocated native files found in #{app_path}"
