@@ -19,6 +19,10 @@ Colo Loco will find your colocated native files, automatically link them up to t
 </tr>
 </table>
 
+### Watch Jamon show how to use React Native Colo Loco!
+
+<a href="https://www.youtube.com/watch?v=gfORZXq4ZgE" target="_blank"><img width="500" alt="CleanShot 2023-03-02 at 08 31 33@2x" src="https://user-images.githubusercontent.com/1479215/222491788-3df92769-cd9d-4ab8-9b35-54cd427f36a9.png"><a/>
+
 ## Installation
 
 _Note that Colo Loco doesn't (yet) support Expo._
@@ -62,6 +66,18 @@ link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
 </details>
+
+#### Exclude specific Xcode targets
+
+In some cases you may want to exclude certain targets from being linked. For example, if you have a `MyAppTests` target, you may not want to link your native files into that target. To do this, the `exclude_targets` option flag specifies an array of target names to exclude. Just add the following to your Podfile:
+
+```ruby
+link_colocated_native_files(
+  app_name: 'MyApp',
+  app_path: "../app",
+  exclude_targets: ['MyAppTests']
+)
+```
 
 ### Android Manual Installation
 
@@ -627,6 +643,6 @@ However, these are edge-cases, and likely best if you create your own package / 
 2. If you're getting obscure native errors, try opening the project in Android Studio or Xcode and building from there to get more targeted errors
 3. If you think the issue is with React Native Colo Loco, try creating a brand-new app using the instructions earlier in the README and replicate the problem there. Then file an issue with a link to the replication repo. Issues without replication steps or repos will most likely be closed without resolution because who's got time for that?
 
-If you continue having problems, join the Infinite Red Slack community at https://community.infinite.red and ask in the #react-native channel. Make sure to mention you are using React Native Colo Loco.
+If you continue having problems, join the Infinite Red Slack community at <https://community.infinite.red> and ask in the #react-native channel. Make sure to mention you are using React Native Colo Loco.
 
 If you need help from pros, consider hiring [Infinite Red](https://infinite.red/reactnative), my React Native consulting company.

@@ -11,6 +11,7 @@ def link_colocated_native_files(options = {})
 
   app_name = options[:app_name]
   app_path = options[:app_path]
+  excluded_targets = options[:exclude_targets] || []
   project_path = "#{app_name}.xcodeproj"
 
   # if app_path/ios/Podfile exists, stop and warn the user
@@ -50,16 +51,23 @@ def link_colocated_native_files(options = {})
 
     puts "Adding co-located native files from #{app_path} to Xcode project"
     colocated_files.each do |file|
-      next if colocated_group.files.map(&:real_path).include?(Pathname.new(file).realpath) # Skip files that are already in the colocated_group
+      relative_file_path = Pathname.new(file).realpath
+      
+      # Skip files that are already in the colocated_group
+      next if colocated_group.files.map(&:real_path).include?(relative_file_path)
 
       puts "Adding #{file}"
-      new_file = colocated_group.new_file(file)
-
+      new_file = colocated_group.new_file(relative_file_path)
+      
       # add the new file to all targets
       project.targets.each do |target|
+        # Skipping #{target.name} because it is in the excluded_targets list
+        next if excluded_targets.include?(target.name)
+        
         target.add_file_references([new_file])
       end
     end
+
     project.save
   else
     puts "No colocated native files found in #{app_path}"
