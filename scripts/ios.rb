@@ -27,8 +27,7 @@ def link_colocated_native_files(options = {})
     return
   end
 
-  # get the colocated files
-  colocated_files = Dir.glob(File.join(app_path, '**/*.{h,m,c,swift}'))
+  colocated_files = Dir.glob(File.join(app_path, '**/*.{h,m,c,swift}')).map { |file| Pathname.new(file).realpath }
 
   # if there are any colocated files, let's add them
   if colocated_files.length > 0
@@ -44,20 +43,19 @@ def link_colocated_native_files(options = {})
     # Remove files from the existing colocated file_group that are not present in the colocated_files array
     if existing_group
       existing_group.files.each do |file|
-        next if colocated_files.include?(file.real_path.to_s) # Skip files that are already in the colocated_files array
+        next if colocated_files.include?(file.real_path) # Skip files that are already in the colocated_files array
         file.remove_from_project
       end
     end
 
     puts "Adding co-located native files from #{app_path} to Xcode project"
+    colocated_group_files = colocated_group.files.map(&:real_path)
+
     colocated_files.each do |file|
-      relative_file_path = Pathname.new(file).realpath
-      
-      # Skip files that are already in the colocated_group
-      next if colocated_group.files.map(&:real_path).include?(relative_file_path)
+      next if colocated_group_files.include?(file)
 
       puts "Adding #{file}"
-      new_file = colocated_group.new_file(relative_file_path)
+      new_file = colocated_group.new_file(file)
       
       # add the new file to all targets
       project.targets.each do |target|
