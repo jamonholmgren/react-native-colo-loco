@@ -1,4 +1,5 @@
 // Bar.swift
+// colo_loco_targets: TestAppTests
 import Foundation
 import UIKit
 

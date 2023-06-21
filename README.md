@@ -79,6 +79,16 @@ link_colocated_native_files(
 )
 ```
 
+You can also specify on an individual file basis which targets you want to link. Add a comment somewhere in the file (recommended near the top) with the following format:
+
+```swift
+// colo_loco_targets: TestApp, TestAppTests
+```
+
+This will link the file into the `TestApp` and `TestAppTests` targets, but not any other targets.
+
+Note that the exclude_targets option takes precedence over the comment-based approach.
+
 ### Android Manual Installation
 
 <details>

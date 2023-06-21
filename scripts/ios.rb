@@ -53,18 +53,23 @@ def link_colocated_native_files(options = {})
 
     colocated_files.each do |file|
       next if colocated_group_files.include?(file)
-
+    
       puts "Adding #{file}"
       new_file = colocated_group.new_file(file)
-      
-      # add the new file to all targets
+    
+      # Check if this file specifies any Colo Loco targets
+      file_content = File.read(file)
+      targets_line = file_content[/colo_loco_targets: (.+)/, 1] # Get the line with the targets, if it exists
+      specified_targets = targets_line&.split(',')&.map(&:strip) || []
+    
+      # Add the new file to all targets (or only the specified targets, if any)
       project.targets.each do |target|
-        # Skipping #{target.name} because it is in the excluded_targets list
-        next if excluded_targets.include?(target.name)
-        
+        # Skip this target if it's in the excluded_targets list or if this file specifies targets and this target isn't one of them
+        next if excluded_targets.include?(target.name) || (specified_targets.any? && !specified_targets.include?(target.name))
+    
         target.add_file_references([new_file])
       end
-    end
+    end    
 
     project.save
   else
