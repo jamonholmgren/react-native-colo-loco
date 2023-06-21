@@ -22,13 +22,17 @@ describe("Checking Colo Loco on iOS. 🤪", () => {
     const xcodeProject = await fs.readFile(`${appPath}/ios/${APP_NAME}.xcodeproj/project.pbxproj`, "utf8")
 
     // Native Modules
-    expect(xcodeProject).toContain("Foo.m")
-    expect(xcodeProject).toContain("Foo.h")
-    expect(xcodeProject).toContain("Bar.swift")
-    expect(xcodeProject).toContain("Bar.m")
+    expect(xcodeProject.split("Foo.m in Sources */ = {isa = PBXBuildFile;").length - 1).toBe(1)
+    expect(xcodeProject.split("Foo.h in Headers */ = {isa = PBXBuildFile;").length - 1).toBe(0)
+
+    // check "Bar.swift" appears twice
+    expect(xcodeProject.split("Bar.swift in Sources */ = {isa = PBXBuildFile;").length - 1).toBe(1)
+
+    // check "Bar.m" appears once
+    expect(xcodeProject.split("Bar.m in Sources */ = {isa = PBXBuildFile;").length - 1).toBe(1)
 
     // Native UI Views
-    expect(xcodeProject).toContain("FooViewManager.m")
-    expect(xcodeProject).toContain("FooViewManager.h")
+    expect(xcodeProject.split("FooViewManager.m in Sources */ = {isa = PBXBuildFile;").length - 1).toBe(2)
+    expect(xcodeProject.split("FooViewManager.h in Headers */ = {isa = PBXBuildFile;").length - 1).toBe(2)
   })
 })

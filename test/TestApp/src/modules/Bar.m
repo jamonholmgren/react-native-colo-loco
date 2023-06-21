@@ -1,4 +1,5 @@
 // Bar.m
+// colo_loco_targets: TestApp
 #import <React/RCTBridgeModule.h>
 
 @interface RCT_EXTERN_MODULE(Bar, NSObject)

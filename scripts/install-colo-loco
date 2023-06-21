@@ -117,7 +117,11 @@ function setupIOS(appName, sourceFolder, _packageName) {
 # React Native Colo Loco autolinks native files colocated next to your JS files
 # More info here: https://github.com/jamonholmgren/react-native-colo-loco
 require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
-link_colocated_native_files(app_name: '${appName}', app_path: "../${sourceFolder}")
+link_colocated_native_files(
+  app_name: '${appName}',
+  app_path: "../${sourceFolder}",
+  exclude_targets: ['${appName}Tests']
+)
 `
 
     // prepend the cololoco setup string
