@@ -87,7 +87,7 @@ You can also specify on an individual file basis which targets you want to link.
 
 This will link the file into the `TestApp` and `TestAppTests` targets, but not any other targets.
 
-Note that the exclude_targets option takes precedence over the comment-based approach.
+Note that this comment-based approach will take precedence over the `exclude_targets` option.
 
 ### Android Manual Installation
 

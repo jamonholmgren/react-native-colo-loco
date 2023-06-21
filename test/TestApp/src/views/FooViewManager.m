@@ -1,4 +1,5 @@
 // FooViewManager.h
+// colo_loco_targets: TestApp, TestAppTests
 #import "FooViewManager.h"
 
 @implementation FooViewManager
