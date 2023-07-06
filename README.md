@@ -1,3 +1,4 @@
+
 # React Native Colo Loco 🤪
 
 Have you ever needed to write a native iOS and Android module but find yourself deep in Stack Overflow and digging through Xcode and Android Studio?
@@ -656,3 +657,12 @@ However, these are edge-cases, and likely best if you create your own package / 
 If you continue having problems, join the Infinite Red Slack community at <https://community.infinite.red> and ask in the #react-native channel. Make sure to mention you are using React Native Colo Loco.
 
 If you need help from pros, consider hiring [Infinite Red](https://infinite.red/reactnative), my React Native consulting company.
+
+
+## Contributing to React Native Colo Loco
+
+If you're interested in contributing to this project, we have a [YouTube video](https://www.youtube.com/watch?v=ucEBfIZOap8) that demonstrates the process. The video is a demo of contributing to React Native Colo Loco, not a tutorial. It provides a practical example of how you can contribute to this project. 
+
+In the video, you'll see how to add a new feature requested by one of our project teams at Infinite Red. The video also covers test-driven development with ChatGPT and Github Copilot. 
+
+Please like the video & subscribe to the channel! And let us know on Twitter what you think.
