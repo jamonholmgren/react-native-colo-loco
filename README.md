@@ -1,6 +1,7 @@
 
 
 
+
 # React Native Colo Loco 🤪
 
 Have you ever needed to write a native iOS and Android module but find yourself deep in Stack Overflow and digging through Xcode and Android Studio?
@@ -424,6 +425,13 @@ const { Gant } = NativeModules
 
 Gant.hello()
 ```
+
+## Contributing to React Native Colo Loco
+
+[Watch the demo on YouTube](https://www.youtube.com/watch?v=gfORZXq4ZgE)
+In this video, Jamon demonstrates how to contribute to React Native Colo Loco by hacking Xcode workspace files. He also introduces a new feature requested by one of his project teams at Infinite Red and shows how to do test-driven development the easy way with ChatGPT and Github Copilot. Watch the video to learn more about contributing to React Native Colo Loco!
+In this video, Jamon demonstrates how to use React Native Colo Loco by hacking Xcode workspace files. He also introduces a new feature requested by one of his project teams at Infinite Red and shows how to do test-driven development the easy way with ChatGPT and Github Copilot. Watch the video to learn more about using React Native Colo Loco!
+<a href="https://www.youtube.com/watch?v=gfORZXq4ZgE" target="_blank"><img width="500" alt="CleanShot 2023-03-02 at 08 31 33@2x" src="https://user-images.githubusercontent.com/1479215/222491788-3df92769-cd9d-4ab8-9b35-54cd427f36a9.png"><a/>
 
 ## Native UI Components
 
