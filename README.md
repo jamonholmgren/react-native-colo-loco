@@ -1,3 +1,4 @@
+
 # React Native Colo Loco 🤪
 
 Have you ever needed to write a native iOS and Android module but find yourself deep in Stack Overflow and digging through Xcode and Android Studio?
@@ -21,6 +22,9 @@ Colo Loco will find your colocated native files, automatically link them up to t
 
 ### Watch Jamon show how to use React Native Colo Loco!
 
+[Watch the tutorial on YouTube](https://www.youtube.com/watch?v=gfORZXq4ZgE)
+
+In this video, Jamon demonstrates how to use React Native Colo Loco by hacking Xcode workspace files. He also introduces a new feature requested by one of his project teams at Infinite Red and shows how to do test-driven development the easy way with ChatGPT and Github Copilot. Watch the video to learn more about using React Native Colo Loco!
 <a href="https://www.youtube.com/watch?v=gfORZXq4ZgE" target="_blank"><img width="500" alt="CleanShot 2023-03-02 at 08 31 33@2x" src="https://user-images.githubusercontent.com/1479215/222491788-3df92769-cd9d-4ab8-9b35-54cd427f36a9.png"><a/>
 
 ## Installation
@@ -656,3 +660,4 @@ However, these are edge-cases, and likely best if you create your own package / 
 If you continue having problems, join the Infinite Red Slack community at <https://community.infinite.red> and ask in the #react-native channel. Make sure to mention you are using React Native Colo Loco.
 
 If you need help from pros, consider hiring [Infinite Red](https://infinite.red/reactnative), my React Native consulting company.
+
