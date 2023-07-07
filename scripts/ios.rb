@@ -33,9 +33,10 @@ def link_colocated_native_files(options = {})
   if colocated_files.length > 0
     project = Xcodeproj::Project.open(project_path)
     file_group = project[app_name]
-
-    # check if the "Colocated" group exists
     existing_group = file_group['Colocated']
+
+    # Create the group if it doesn't exist
+    colocated_group = existing_group || file_group.new_group('Colocated')
 
     # Remove files from the existing colocated file_group that are not present in the colocated_files array
     def remove_nonexistent_files(existing_group, colocated_files)
@@ -54,20 +55,20 @@ def link_colocated_native_files(options = {})
 
     colocated_files.each do |file|
       next if colocated_group_files.include?(file)
-    
+
       puts "Adding #{file}"
       new_file = colocated_group.new_file(file)
-    
+
       # Check if this file specifies any Colo Loco targets
       file_content = File.read(file)
       targets_line = file_content[/colo_loco_targets:(.+)/, 1] # Get the line with the targets, if it exists
       specified_targets = targets_line&.split(',')&.map(&:strip) || []
-    
+
       # Add the new file to all targets (or only the specified targets, if any)
       project.targets.each do |target|
         # Skip this target if it's in the excluded_targets list or if this file specifies targets and this target isn't one of them
         # next if (specified_targets.any? && !specified_targets.include?(target.name)) || (!specified_targets.any? && excluded_targets.include?(target.name))
-    
+
         # If there are specified_targets, only add this file to the targets in that list;
         # otherwise, use the excluded_list to determine which targets to add this file to
         if specified_targets.any? ? specified_targets.include?(target.name) : !excluded_targets.include?(target.name)
