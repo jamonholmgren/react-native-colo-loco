@@ -1,3 +1,12 @@
+def colocateFiles(filesToColocate, androidPath) {
+  for (fileToColocate in filesToColocate) {
+    // shell out to ln to make a hardlink to the file in the android path
+    def linkPath = Paths.get("${System.getProperty('user.dir')}/${androidPath}/colocated/${fileToColocate.name}")
+    def filePath = Paths.get(fileToColocate.absolutePath)
+    Files.createLink(linkPath, filePath)
+  }
+}
+
 // TL;DR: This file is included and executed from `./android/settings.gradle`
 // like this:
 //
@@ -9,6 +18,7 @@ import java.util.regex.Matcher
 import java.nio.file.Files
 import java.nio.file.Paths
 
+// Move the colocateFiles function definition to the top of the file, before the ext.linkColocatedNativeFiles function
 ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   // strip "./android/" from the androidPath
   def androidPath = customOptions.androidPath.replace("android/", "")
@@ -82,19 +92,10 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   
   // create the `colocated` folder in the androidPath
   colocatedFolder.mkdir()
-  
-  def colocateFiles(filesToColocate, androidPath) {
-    for (fileToColocate in filesToColocate) {
-      // shell out to ln to make a hardlink to the file in the android path
-      def linkPath = Paths.get("${System.getProperty('user.dir')}/${androidPath}/colocated/${fileToColocate.name}")
-      def filePath = Paths.get(fileToColocate.absolutePath)
-      Files.createLink(linkPath, filePath)
-    }
-  }
-  
-  // Call the new function colocateFiles
-  colocateFiles(filesToColocate, androidPath)
 
+  // Call the colocateFiles function
+  colocateFiles(filesToColocate, androidPath)
+  
   // create the manifest file
   def manifestFile = new File(androidPath + "/colocated/", "ColoLoco.java")
 
