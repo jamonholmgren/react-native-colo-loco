@@ -79,18 +79,17 @@ ext.linkColocatedNativeFiles = { Map customOptions = [:] ->
   // remove the 'colocated' folder if it exists in the androidPath
   def colocatedFolder = new File("${System.getProperty('user.dir')}/${androidPath}/colocated")
   if (colocatedFolder.exists()) colocatedFolder.deleteDir()
-
+  
+  // create the `colocated` folder in the androidPath
+  colocatedFolder.mkdir()
+  
   // loop through filesToColocate and colocate the files
-  def colocateFiles(filesToColocate, androidPath) {
-    for (fileToColocate in filesToColocate) {
-      // shell out to ln to make a hardlink to the file in the android path
-      def linkPath = Paths.get("${System.getProperty('user.dir')}/${androidPath}/colocated/${fileToColocate.name}")
-      def filePath = Paths.get(fileToColocate.absolutePath)
-      Files.createLink(linkPath, filePath)
-    }
+  for (fileToColocate in filesToColocate) {
+    // shell out to ln to make a hardlink to the file in the android path
+    def linkPath = Paths.get("${System.getProperty('user.dir')}/${androidPath}/colocated/${fileToColocate.name}")
+    def filePath = Paths.get(fileToColocate.absolutePath)
+    Files.createLink(linkPath, filePath)
   }
-
-  colocateFiles(filesToColocate, androidPath)
 
   // create the manifest file
   def manifestFile = new File(androidPath + "/colocated/", "ColoLoco.java")
