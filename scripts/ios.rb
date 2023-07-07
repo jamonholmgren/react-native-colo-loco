@@ -43,13 +43,9 @@ def link_colocated_native_files(options = {})
     project = Xcodeproj::Project.open(project_path)
     file_group = project[app_name]
     existing_group = file_group['Colocated']
-
-    remove_nonexistent_files(existing_group, colocated_files)
-
     # Create the group if it doesn't exist
     colocated_group = existing_group || file_group.new_group('Colocated')
 
-    puts "Adding co-located native files from #{app_path} to Xcode project"
     colocated_group_files = colocated_group.files.map(&:real_path)
 
     colocated_files.each do |file|
@@ -75,6 +71,10 @@ def link_colocated_native_files(options = {})
         end
       end
     end
+
+    remove_nonexistent_files(existing_group, colocated_files)
+
+    puts "Adding co-located native files from #{app_path} to Xcode project"
 
     project.save
   else
