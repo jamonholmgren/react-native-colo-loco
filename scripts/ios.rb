@@ -37,16 +37,17 @@ def link_colocated_native_files(options = {})
     # check if the "Colocated" group exists
     existing_group = file_group['Colocated']
 
-    # Create the group if it doesn't exist
-    colocated_group = existing_group || file_group.new_group('Colocated')
-
     # Remove files from the existing colocated file_group that are not present in the colocated_files array
-    if existing_group
-      existing_group.files.each do |file|
-        next if colocated_files.include?(file.real_path) # Skip files that are already in the colocated_files array
-        file.remove_from_project
+    def remove_nonexistent_files(existing_group, colocated_files)
+      if existing_group
+        existing_group.files.each do |file|
+          next if colocated_files.include?(file.real_path) # Skip files that are already in the colocated_files array
+          file.remove_from_project
+        end
       end
     end
+
+    remove_nonexistent_files(existing_group, colocated_files)
 
     puts "Adding co-located native files from #{app_path} to Xcode project"
     colocated_group_files = colocated_group.files.map(&:real_path)
@@ -90,3 +91,5 @@ def _colocated_verify_options!(options)
     raise "link_colocated_native_files - You must specify a path to your app"
   end
 end
+
+
