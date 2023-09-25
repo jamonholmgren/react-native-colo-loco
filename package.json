@@ -4,7 +4,7 @@
   "description": "Colocate your native modules with your React Native JavaScript and JSX files",
   "main": "index.js",
   "repository": "https://github.com/jamonholmgren/react-native-colo-loco",
-  "author": "Jamon Holmgren <jamonholmgren@gmail.com>",
+  "author": "Jamon Holmgren <code@jamon.dev>",
   "license": "MIT",
   "private": false,
   "bin": {
