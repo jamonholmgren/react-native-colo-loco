@@ -61,7 +61,7 @@ _NOTE: If this doesn't work or you have a non-standard project structure, try th
 For iOS, add this to your Podfile (`ios/Podfile`) (don't forget to change `MyApp` to your actual app name):
 
 ```ruby
-require_relative '../node_modules/react-native-colo-loco/scripts/ios.rb'
+require File.join(File.dirname(`node --print "require.resolve('react-native-colo-loco/package.json')"`), "scripts/ios.rb")
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
@@ -153,7 +153,7 @@ Open up your `./android/settings.gradle` file and add this near the top (replace
 ```groovy
 rootProject.name = 'MyApp'
 
-apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
+apply from: new File(["node", "--print", "require.resolve('react-native-colo-loco/package.json')"].execute(null, rootDir).text.trim(), "../scripts/android.groovy")
 linkColocatedNativeFiles([
   appName: rootProject.name,
   appPath: "../app",
