@@ -13,8 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - run: yarn install --frozen-lockfile
-      - name: Debugging NPM_TOKEN
-        run: echo -n "${{ secrets.NPM_TOKEN }}" | tail -c 4
       - name: Semantic Release
         run: "yarn ci:publish"
         env:

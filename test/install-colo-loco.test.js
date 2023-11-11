@@ -34,13 +34,15 @@ describe("Checking for install-colo-loco. 🤪", () => {
     // iOS set up is correct
     // Podfile
     const podfile = await fs.readFile(`${appPath}/ios/Podfile`, "utf8")
-    expect(podfile).toContain("react-native-colo-loco/scripts/ios.rb")
+    expect(podfile).toContain("react-native-colo-loco/package.json")
+    expect(podfile).toContain("scripts/ios.rb")
     expect(podfile).toContain("link_colocated_native_files")
 
     // Android set up is correct
     // settings.gradle
     const settingsGradle = await fs.readFile(`${appPath}/android/settings.gradle`, "utf8")
-    expect(settingsGradle).toContain("react-native-colo-loco/scripts/android.groovy")
+    expect(settingsGradle).toContain("react-native-colo-loco/package.json")
+    expect(settingsGradle).toContain("scripts/android.groovy")
     expect(settingsGradle).toContain("linkColocatedNativeFiles")
     expect(settingsGradle).toContain(PACKAGE_NAME)
 

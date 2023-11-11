@@ -47,7 +47,7 @@ function runColoLoco({ appPath, input = [] } = {}, args = []) {
 
 async function createTempApp({ initGit = false, setupAndroid = false, setupIOS = false, setupColoLoco = false } = {}) {
   // create temp folder
-  const tempDir = path.join(os.tmpdir(), `colo-loco-test-${Math.random()}`)
+  const tempDir = path.join(os.tmpdir(), `colo-loco-test-${Date.now()}-${Math.floor(Math.random() * 10000)}`)
   await fs.mkdir(tempDir)
 
   // copy TestApp to temp folder
@@ -73,6 +73,11 @@ async function createTempApp({ initGit = false, setupAndroid = false, setupIOS =
         path.join(__dirname, "../scripts"),
         path.join(tempDir, "node_modules/react-native-colo-loco/scripts"),
         { recursive: true }
+      )
+      // copy package.json too
+      await fs.copy(
+        path.join(__dirname, "../package.json"),
+        path.join(tempDir, "node_modules/react-native-colo-loco/package.json")
       )
     }
   }
