@@ -116,7 +116,7 @@ function setupIOS(appName, sourceFolder, _packageName) {
     const coloLocoPodfileContents = `
 # React Native Colo Loco autolinks native files colocated next to your JS files
 # More info here: https://github.com/jamonholmgren/react-native-colo-loco
-require File.join(File.dirname(\`node --print "require.resolve('react-native-colo-loco/package.json')"\`), "../scripts/ios.rb")
+require File.join(File.dirname(\`node --print "require.resolve('react-native-colo-loco/package.json')"\`), "scripts/ios.rb")
 link_colocated_native_files(
   app_name: '${appName}',
   app_path: "../${sourceFolder}",
