@@ -61,7 +61,7 @@ _NOTE: If this doesn't work or you have a non-standard project structure, try th
 For iOS, add this to your Podfile (`ios/Podfile`) (don't forget to change `MyApp` to your actual app name):
 
 ```ruby
-require File.join(File.dirname(`node --print "require.resolve('react-native-colo-loco/package.json')"`), "scripts/ios.rb")
+require File.join(File.dirname(`node --print "require.resolve('react-native-colo-loco/package.json')"`), "../scripts/ios.rb")
 link_colocated_native_files(app_name: 'MyApp', app_path: "../app")
 ```
 
