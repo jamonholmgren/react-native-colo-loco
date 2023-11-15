@@ -1,7 +1,7 @@
 // TL;DR: This file is included and executed from `./android/settings.gradle`
 // like this:
 //
-// apply from: '../node_modules/react-native-colo-loco/scripts/android.groovy'
+// apply from: new File(["node", "--print", "require.resolve('react-native-colo-loco/package.json')"].execute(null, rootDir).text.trim(), "../scripts/android.groovy")
 // linkColocatedNativeFiles([ appName: rootProject.name, appPath: "../app", appPackageName: "com.myapp", androidPath: "./android/app/src/main/java/com/myapp" ])
 
 import java.util.regex.Pattern
